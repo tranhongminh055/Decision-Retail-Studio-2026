@@ -1,0 +1,194 @@
+<html xmlns:o='urn:schemas-microsoft-com:office:office'
+      xmlns:w='urn:schemas-microsoft-com:office:word'
+      xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset='utf-8'>
+<title>Biên Bản Thẩm Định Chiến Lược Kinh Doanh</title>
+<!--[if gte mso 9]>
+<xml>
+ <w:WordDocument>
+  <w:View>Print</w:View>
+  <w:Zoom>100</w:Zoom>
+  <w:DoNotOptimizeForBrowser/>
+ </w:WordDocument>
+</xml>
+<![endif]-->
+<style>
+@page Section1 {
+    size: 595.3pt 841.9pt; /* A4 210mm x 297mm */
+    margin: 56.7pt 56.7pt 56.7pt 70.85pt; /* Top 2cm, Right 2cm, Bottom 2cm, Left 2.5cm (Nghị định 30/2020) */
+    mso-header-margin: 36.0pt;
+    mso-footer-margin: 36.0pt;
+    mso-paper-source: 0;
+}
+div.Section1 { page: Section1; }
+body { font-family: 'Times New Roman', serif; font-size: 13pt; line-height: 1.35; color: #000000; text-align: justify; }
+h1 { font-family: 'Times New Roman', serif; font-size: 14pt; font-weight: bold; text-align: center; text-transform: uppercase; margin: 12pt 0 4pt 0; }
+h2 { font-family: 'Times New Roman', serif; font-size: 13pt; font-weight: bold; margin: 10pt 0 4pt 0; }
+.center { text-align: center; }
+.bold { font-weight: bold; }
+.italic { font-style: italic; }
+table.header-table { width: 100%; border-collapse: collapse; margin-bottom: 12pt; }
+table.header-table td { border: none; padding: 0; vertical-align: top; font-size: 12pt; line-height: 1.25; }
+table.word-table { width: 100%; border-collapse: collapse; margin: 8pt 0 12pt 0; }
+table.word-table th { border: 1pt solid windowtext; padding: 5pt 6pt; font-weight: bold; text-align: center; background-color: #F2F2F2; font-size: 11pt; }
+table.word-table td { border: 1pt solid windowtext; padding: 5pt 6pt; font-size: 11pt; }
+table.sig-table { width: 100%; border-collapse: collapse; margin-top: 24pt; page-break-inside: avoid; }
+table.sig-table td { border: none; padding: 0; text-align: center; vertical-align: top; font-size: 12pt; width: 33.33%; }
+hr.solid { border: none; border-top: 1pt solid #000; width: 140pt; margin: 4pt auto 6pt auto; }
+ul { margin-top: 2pt; margin-bottom: 6pt; padding-left: 20pt; }
+li { margin-bottom: 3pt; }
+</style>
+</head>
+<body>
+<div class='Section1'>
+
+<table class='header-table'>
+  <tr>
+    <td style='width: 45%; text-align: center;'>
+      <strong>TẬP ĐOÀN BÁN LẺ DSS RETAIL</strong><br>
+      <strong>HỘI ĐỒNG THẨM ĐỊNH CHIẾN LƯỢC</strong><br>
+      Số: 88/BB-HĐDSS/2026<br>
+      <span style='font-size: 10pt; font-style: italic;'>Mã phiên: DSS-2026-Q4-ENT</span>
+    </td>
+    <td style='width: 55%; text-align: center;'>
+      <strong>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</strong><br>
+      <strong>Độc lập - Tự do - Hạnh phúc</strong>
+      <hr class='solid'>
+      <span style='font-style: italic; font-size: 12pt;'>TP. Hồ Chí Minh, ngày 26 tháng 10 năm 2026</span>
+    </td>
+  </tr>
+</table>
+
+<h1>BIÊN BẢN HỌP HỘI ĐỒNG THẨM ĐỊNH VÀ PHÊ DUYỆT CHIẾN LƯỢC NHẬP HÀNG QUÝ 4/2026</h1>
+<p class='center italic' style='font-size: 12pt; margin-top: 0;'>Ứng dụng Mô hình Phân tích Thứ bậc Đa tiêu chí (AHP - Saaty) & Trợ lý Trí tuệ Nhân tạo AI</p>
+
+<p style='margin: 8pt 0 4pt 0;'><strong>Kính gửi:</strong></p>
+<ul>
+  <li>Ban Giám Đốc Tập đoàn DSS Retail;</li>
+  <li>Phòng Kế Hoạch & Quản Trị Danh Mục;</li>
+  <li>Phòng Quản Trị Tài Chính (CFO);</li>
+  <li>Phòng Kinh Doanh & Phân Phối Bán Lẻ.</li>
+</ul>
+
+<h2>I. CĂN CỨ KHOA HỌC & KIỂM TRA ĐỘ TIN CẬY TOÁN HỌC:</h2>
+<p>Hội đồng thẩm định đã kích hoạt phiên làm việc DSS-2026-Q4-ENTERPRISE dựa trên ma trận so sánh cặp Saaty 5 tiêu chí được trích xuất từ dữ liệu bán hàng thực tế trên SQL Server (DSS_SalesDB):</p>
+<ul>
+  <li><strong>C1 - Biên Lợi Nhuận Gộp (Margin %):</strong> Trọng số 41.62% (Tiêu chí chi phối số 1).</li>
+  <li><strong>C2 - Doanh Thu Kỳ Vọng (Expected Revenue):</strong> Trọng số 26.18% (Tiêu chí chi phối số 2).</li>
+  <li><strong>C3 - Xu Hướng & Nhu Cầu Thị Trường (Market Demand):</strong> Trọng số 16.03%.</li>
+  <li><strong>C4 - An Toàn Vốn & Quản Trị Rủi Ro (Capital Safety):</strong> Trọng số 9.81%.</li>
+  <li><strong>C5 - Tiết Kiệm Chi Phí Marketing (Marketing Cost):</strong> Trọng số 6.36%.</li>
+</ul>
+<p>• <strong>Kiểm tra Tỷ số Nhất quán Saaty (Consistency Ratio):</strong> <strong>CR = 0.0152 (1.52% &lt; 10.0%)</strong>. Theo tiêu chuẩn lý thuyết của Giáo sư Thomas L. Saaty, ma trận so sánh cặp đạt độ nhất quán logic toán học tuyệt đối, các trọng số và điểm số có độ tin cậy 100% để ban hành quyết định đầu tư.</p>
+
+<h2>II. BẢNG XẾP HẠNG THỨ BẬC ĐỊNH LƯỢNG CÁC PHƯƠNG ÁN (AHP QUANTITATIVE TABLE):</h2>
+<table class='word-table'>
+  <thead>
+    <tr>
+      <th style='width: 8%;'>Hạng</th>
+      <th style='width: 15%;'>Mã SKU</th>
+      <th style='width: 27%;'>Tên Phương Án / Sản Phẩm</th>
+      <th style='width: 15%;'>Giá Niêm Yết</th>
+      <th style='width: 12%;'>Điểm AHP</th>
+      <th style='width: 23%;'>Kết Luận Thẩm Định</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style='text-align: center; font-weight: bold;'>#1</td>
+      <td style='text-align: center;'>PRD_S24_ULTRA</td>
+      <td><strong>Samsung Galaxy S24 Ultra 256GB</strong></td>
+      <td style='text-align: right;'>31,990,000 đ</td>
+      <td style='text-align: center; font-weight: bold;'>0.9102</td>
+      <td>PHÊ DUYỆT (Nhập Lớn)</td>
+    </tr>
+    <tr>
+      <td style='text-align: center; font-weight: bold;'>#2</td>
+      <td style='text-align: center;'>PRD_DELL_G15</td>
+      <td><strong>Dell Gaming G15 5530 i7</strong></td>
+      <td style='text-align: right;'>28,490,000 đ</td>
+      <td style='text-align: center; font-weight: bold;'>0.7412</td>
+      <td>XEM XÉT (Nhập Thăm Dò)</td>
+    </tr>
+    <tr>
+      <td style='text-align: center; font-weight: bold;'>#3</td>
+      <td style='text-align: center;'>PRD_AW_ULTRA2</td>
+      <td><strong>Apple Watch Ultra 2 GPS + Cellular</strong></td>
+      <td style='text-align: right;'>21,990,000 đ</td>
+      <td style='text-align: center; font-weight: bold;'>0.6850</td>
+      <td>XEM XÉT (Nhập Thăm Dò)</td>
+    </tr>
+    <tr>
+      <td style='text-align: center; font-weight: bold;'>#4</td>
+      <td style='text-align: center;'>PRD_ACER_M5510</td>
+      <td><strong>Acer Aspire M5510 Office</strong></td>
+      <td style='text-align: right;'>14,990,000 đ</td>
+      <td style='text-align: center; font-weight: bold;'>0.5200</td>
+      <td>LOẠI BỎ (Xả Tồn Kho)</td>
+    </tr>
+    <tr>
+      <td style='text-align: center; font-weight: bold;'>#5</td>
+      <td style='text-align: center;'>PRD_SPK_BT01</td>
+      <td><strong>Loa Bluetooth SoundMax BT-01</strong></td>
+      <td style='text-align: right;'>1,250,000 đ</td>
+      <td style='text-align: center; font-weight: bold;'>0.3800</td>
+      <td>LOẠI BỎ (Xả Tồn Kho)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>III. KẾT LUẬN & QUYẾT NGHỊ ĐIỀU HÀNH KINH DOANH (+AI STRATEGIC DIRECTIVES):</h2>
+<p>Hội đồng thẩm định và Trợ lý Trí tuệ Nhân tạo thống nhất ban hành các quyết nghị thực thi chiến lược nhập hàng như sau:</p>
+
+<p><strong>1. Phê duyệt nhập hàng quy mô lớn đối với phương án Quán quân:</strong></p>
+<ul>
+  <li>Sản phẩm tối ưu số 1: <strong>Samsung Galaxy S24 Ultra 256GB</strong> (Điểm AHP tổng hợp: <strong>0.9102 / 1.0000</strong>).</li>
+  <li><strong>Số lượng nhập phê duyệt:</strong> Nhập ngay lô <strong>150 sản phẩm</strong> trong đợt 1 Quý 4/2026.</li>
+  <li><strong>Phân bổ tài chính:</strong> Giải ngân <strong>50% tổng ngân sách tiếp thị</strong> của quý cho chiến dịch truyền thông mở bán và chương trình thu cũ đổi mới.</li>
+  <li><strong>Cơ sở phê duyệt:</strong> Sản phẩm dẫn đầu tuyệt đối ở cả 2 tiêu chí có trọng số lớn nhất (Biên lợi nhuận 41.62% và Doanh thu kỳ vọng 26.18%), thời gian thu hồi vốn ước tính dưới 45 ngày.</li>
+</ul>
+
+<p><strong>2. Phê duyệt nhập hàng thăm dò đối với các phương án tiềm năng (Under Review):</strong></p>
+<ul>
+  <li>Nhóm sản phẩm: <strong>Dell Gaming G15 5530</strong> (Hạng 2 - Điểm: 0.7412) và <strong>Apple Watch Ultra 2</strong> (Hạng 3 - Điểm: 0.6850).</li>
+  <li><strong>Số lượng nhập phê duyệt:</strong> Giới hạn định mức từ <strong>30 đến 40 sản phẩm</strong> cho mỗi dòng máy.</li>
+  <li><strong>Nguyên tắc giải ngân:</strong> Chỉ giải ngân đối ứng theo số lượng tiền đặt cọc trước (Pre-order) thực tế của khách hàng để bảo toàn dòng tiền lưu động.</li>
+</ul>
+
+<p><strong>3. Quyết nghị dừng nhập mới và giải phóng hàng tồn kho (Rejected):</strong></p>
+<ul>
+  <li>Nhóm sản phẩm: <strong>Acer Aspire M5510</strong> (Hạng 4 - Điểm: 0.5200) và <strong>Loa Bluetooth BT-01</strong> (Hạng 5 - Điểm: 0.3800).</li>
+  <li><strong>Chỉ đạo thực thi:</strong> <strong>DỪNG NHẬP MỚI 100%</strong> đối với các mã hàng này do điểm AHP không đạt ngưỡng an toàn (&lt; 0.60) và vòng quay tồn kho trên 90 ngày.</li>
+  <li><strong>Chiến dịch xả kho:</strong> Kích hoạt chính sách <strong>chiết khấu thanh lý 40%</strong> hoặc đóng gói làm quà tặng combo kèm laptop cao cấp để thu hồi vốn lưu động trước ngày 31/12/2026.</li>
+</ul>
+
+<table class='sig-table'>
+  <tr>
+    <td>
+      <strong>TRƯỞNG PHÒNG KINH DOANH</strong><br>
+      <em>(Đã thẩm định nhu cầu & thị trường)</em><br><br><br><br>
+      <strong>Nguyễn Văn A</strong>
+    </td>
+    <td>
+      <strong>GIÁM ĐỐC TÀI CHÍNH (CFO)</strong><br>
+      <em>(Đã kiểm soát ngân sách & rủi ro)</em><br><br><br><br>
+      <strong>Trần Thị B</strong>
+    </td>
+    <td>
+      <strong>TỔNG GIÁM ĐỐC (CEO)</strong><br>
+      <em>(Phê duyệt quyết nghị thi hành)</em><br><br><br><br>
+      <strong>Lê Hoàng C</strong>
+    </td>
+  </tr>
+</table>
+
+<p style='font-size: 10pt; font-style: italic; margin-top: 30pt;'>
+<strong><em>Nơi nhận:</em></strong><br>
+- Như kính gửi;<br>
+- Lưu: VT, Hồ sơ DSS 2026.<br>
+</p>
+
+</div>
+</body>
+</html>

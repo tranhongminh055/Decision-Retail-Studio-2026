@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ Sơ Thẩm Định & Phê Duyệt Chiến Lược Kinh Doanh - DSS Retail Studio 2026</title>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #EEF2FF;
+            --primary-dark: #3730A3;
+            --success: #10B981;
+            --success-light: #ECFDF5;
+            --warning: #F59E0B;
+            --warning-light: #FFFBEB;
+            --danger: #EF4444;
+            --danger-light: #FEF2F2;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --bg: #F8FAFC;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text-main); line-height: 1.6; }
+        
+        .action-bar { position: sticky; top: 0; z-index: 100; background: #0F172A; color: #FFF; padding: 12px 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .action-bar-inner { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .live-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #34D399; margin-right: 8px; box-shadow: 0 0 8px #34D399; }
+        .btn-print { background: linear-gradient(135deg, #4F46E5, #6366F1); color: #FFF; border: none; padding: 10px 20px; font-weight: 700; font-size: 14px; border-radius: 8px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 6px rgba(79, 70, 229, 0.4); }
+        .btn-print:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(79, 70, 229, 0.6); }
+        
+        .report-container { max-width: 1000px; margin: 28px auto 40px auto; background: #FFFFFF; border-radius: 14px; padding: 48px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06); }
+        
+        .letterhead { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 24px; border-bottom: 2px solid var(--border); margin-bottom: 28px; }
+        .letterhead-left { font-size: 13px; line-height: 1.45; }
+        .company-title { font-weight: 800; font-size: 15px; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px; }
+        .dept-title { font-weight: 700; color: var(--primary); font-size: 13px; }
+        .doc-no { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
+        .letterhead-right { text-align: center; font-size: 13px; line-height: 1.45; }
+        .country-title { font-weight: 800; font-size: 14px; text-transform: uppercase; }
+        .motto { font-weight: 600; font-size: 12.5px; margin-top: 2px; }
+        .letterhead-right hr { width: 140px; margin: 4px auto 6px auto; border: none; border-top: 1px solid #94A3B8; }
+        .location-date { font-style: italic; font-size: 12px; color: var(--text-muted); }
+        .confidential-badge { display: inline-block; margin-top: 6px; padding: 3px 8px; background: #FEF2F2; color: #DC2626; border: 1px dashed #DC2626; border-radius: 4px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+        
+        .report-title-area { text-align: center; margin-bottom: 32px; }
+        .report-title-area h1 { font-size: 24px; font-weight: 900; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.3; }
+        .report-title-area .subtitle { font-size: 14px; font-weight: 600; color: var(--primary); margin-top: 6px; text-transform: uppercase; }
+        .report-title-area .meta { font-size: 13px; color: var(--text-muted); font-style: italic; margin-top: 6px; }
+        
+        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 36px; }
+        .kpi-card { background: #FFFFFF; border: 1px solid var(--border); border-radius: 10px; padding: 18px; border-top: 4px solid var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .kpi-card.emerald { border-top-color: var(--success); background: #F0FDF4; }
+        .kpi-card.indigo { border-top-color: var(--primary); }
+        .kpi-card.sky { border-top-color: #0284C7; }
+        .kpi-card.amber { border-top-color: var(--warning); }
+        .kpi-label { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; }
+        .kpi-value { font-size: 17px; font-weight: 900; color: var(--text-main); margin: 6px 0 4px 0; }
+        .kpi-sub { font-size: 11.5px; color: var(--text-muted); font-weight: 500; }
+        .tag-status { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10.5px; font-weight: 700; }
+        .tag-status.selected { background: #D1FAE5; color: #065F46; }
+        
+        .section-header { font-size: 15px; font-weight: 800; color: var(--text-main); text-transform: uppercase; padding-bottom: 8px; border-bottom: 2px solid #F1F5F9; margin-bottom: 18px; display: flex; align-items: center; }
+        .section-header span { margin-right: 8px; font-size: 18px; }
+        
+        .visual-container { background: #F8FAFC; border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 36px; }
+        .chart-grid { display: grid; grid-template-columns: 3fr 2fr; gap: 24px; }
+        .column-chart { background: #FFFFFF; border: 1px solid var(--border); border-radius: 10px; padding: 20px; position: relative; }
+        .chart-inner-title { font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 18px; letter-spacing: 0.5px; }
+        .chart-bars-wrap { display: flex; justify-content: space-around; align-items: flex-end; height: 210px; padding: 0 10px 10px 10px; position: relative; border-bottom: 2px solid #CBD5E1; }
+        .benchmark-line { position: absolute; left: 0; right: 0; bottom: 126px; border-top: 2px dashed #EF4444; z-index: 5; pointer-events: none; }
+        .benchmark-tag { position: absolute; right: 8px; top: -18px; font-size: 10px; font-weight: 700; color: #EF4444; background: #FEF2F2; padding: 1px 6px; border-radius: 3px; border: 1px solid #FECACA; }
+        .bar-col { display: flex; flex-direction: column; align-items: center; width: 56px; z-index: 10; }
+        .bar-score-pill { font-size: 10.5px; font-weight: 800; color: #1E293B; margin-bottom: 6px; }
+        .bar-fill { width: 44px; border-radius: 6px 6px 0 0; transition: height 0.3s; position: relative; display: flex; justify-content: center; align-items: flex-start; padding-top: 4px; }
+        .bar-fill.rank1 { background: linear-gradient(180deg, #10B981 0%, #059669 100%); box-shadow: 0 4px 10px rgba(16, 185, 129, 0.35); }
+        .bar-fill.rank-mid { background: linear-gradient(180deg, #F59E0B 0%, #D97706 100%); }
+        .bar-fill.rank-low { background: linear-gradient(180deg, #F43F5E 0%, #E11D48 100%); }
+        .crown-icon { font-size: 14px; }
+        .bar-labels { text-align: center; margin-top: 8px; }
+        .bar-rank-badge { font-size: 10px; font-weight: 800; padding: 1px 5px; border-radius: 4px; display: inline-block; }
+        .badge-r1 { background: #D1FAE5; color: #065F46; }
+        .badge-rm { background: #FEF3C7; color: #92400E; }
+        .badge-rl { background: #FFE4E6; color: #9F1239; }
+        .bar-sku-name { font-size: 10px; font-weight: 600; color: var(--text-muted); margin-top: 3px; max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        
+        .weights-container { background: #FFFFFF; border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+        .weight-row { margin-bottom: 12px; }
+        .weight-head { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+        .weight-track { height: 8px; background: #E2E8F0; border-radius: 4px; overflow: hidden; }
+        .weight-bar { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #4F46E5, #818CF8); }
+        
+        .dss-table { width: 100%; border-collapse: collapse; margin-bottom: 36px; font-size: 13px; }
+        .dss-table th { background: #0F172A; color: #FFFFFF; font-weight: 700; text-align: left; padding: 12px 14px; text-transform: uppercase; font-size: 11.5px; letter-spacing: 0.5px; }
+        .dss-table th:first-child { border-radius: 8px 0 0 0; text-align: center; width: 60px; }
+        .dss-table th:last-child { border-radius: 0 8px 0 0; }
+        .dss-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); }
+        .dss-table tr:nth-child(even) { background-color: #F8FAFC; }
+        .dss-table tr:hover { background-color: #F1F5F9; }
+        .badge-pill { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-align: center; }
+        .badge-selected { background: #D1FAE5; color: #065F46; border: 1px solid #A7F3D0; }
+        .badge-review { background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; }
+        .badge-rejected { background: #FFE4E6; color: #9F1239; border: 1px solid #FECDD3; }
+        .rank-circle { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; margin: 0 auto; }
+        .rk-1 { background: #10B981; color: #FFF; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4); }
+        .rk-mid { background: #F1F5F9; color: #334155; }
+        
+        .directive-card { border-radius: 10px; padding: 20px; margin-bottom: 16px; border: 1px solid transparent; }
+        .directive-card.opt-1 { background: #F0FDF4; border-color: #A7F3D0; }
+        .directive-card.opt-2 { background: #FFFBEB; border-color: #FDE68A; }
+        .directive-card.opt-3 { background: #FEF2F2; border-color: #FECDD3; }
+        .directive-title { font-size: 14.5px; font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; }
+        .opt-1 .directive-title { color: #065F46; }
+        .opt-2 .directive-title { color: #92400E; }
+        .opt-3 .directive-title { color: #991B1B; }
+        .directive-body { font-size: 13px; color: #334155; line-height: 1.6; }
+        .directive-body li { margin-left: 20px; margin-bottom: 4px; }
+        
+        .signature-section { margin-top: 40px; padding-top: 24px; border-top: 2px solid var(--border); page-break-inside: avoid; }
+        .sig-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center; }
+        .sig-title { font-weight: 800; font-size: 13px; text-transform: uppercase; color: var(--text-main); }
+        .sig-role { font-size: 11.5px; font-style: italic; color: var(--text-muted); margin-top: 2px; }
+        .sig-space { height: 90px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .stamp-circle { border: 2px solid #DC2626; color: #DC2626; border-radius: 50%; width: 78px; height: 78px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 8.5px; font-weight: 800; text-transform: uppercase; transform: rotate(-10deg); opacity: 0.85; }
+        .stamp-verified { border: 2px solid #2563EB; color: #2563EB; border-radius: 6px; padding: 4px 10px; font-size: 10px; font-weight: 800; text-transform: uppercase; transform: rotate(-5deg); opacity: 0.8; }
+        .sig-name { font-weight: 700; font-size: 13px; color: var(--text-main); border-top: 1px dotted #CBD5E1; padding-top: 6px; width: 80%; margin: 0 auto; }
+        
+        .report-footer { margin-top: 36px; text-align: center; font-size: 11.5px; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 16px; }
+        
+        @media print {
+            .no-print { display: none !important; }
+            body { background: #FFF !important; }
+            .report-container { max-width: 100% !important; margin: 0 !important; padding: 20px !important; border: none !important; box-shadow: none !important; }
+            .visual-container, .dss-table, .directive-card, .signature-section { page-break-inside: avoid; }
+            @page { size: A4; margin: 15mm; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="action-bar no-print">
+    <div class="action-bar-inner">
+        <div class="action-info">
+            <span class="live-dot"></span> <strong>HỒ SƠ THẨM ĐỊNH & PHÊ DUYỆT CHIẾN LƯỢC DOANH NGHIỆP</strong> | DSS Retail Decision Studio 2026
+        </div>
+        <div class="action-buttons">
+            <button onclick="window.print()" class="btn-print">🖨️ In Báo Cáo / Xuất PDF (Ctrl + P)</button>
+        </div>
+    </div>
+</div>
+
+<div class="report-container">
+    <div class="letterhead">
+        <div class="letterhead-left">
+            <div class="company-title">TẬP ĐOÀN BÁN LẺ CÔNG NGHỆ DSS RETAIL</div>
+            <div class="dept-title">HỘI ĐỒNG THẨM ĐỊNH & PHÊ DUYỆT CHIẾN LƯỢC KINH DOANH</div>
+            <div class="doc-no">Số: 88/BB-HĐDSS/2026 | Phiên: DSS-2026-Q4-ENTERPRISE</div>
+            <div class="confidential-badge">LƯU HÀNH NỘI BỘ - MẬT</div>
+        </div>
+        <div class="letterhead-right">
+            <div class="country-title">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+            <div class="motto">Độc lập - Tự do - Hạnh phúc</div>
+            <hr>
+            <div class="location-date">TP. Hồ Chí Minh, ngày 26 tháng 10 năm 2026</div>
+        </div>
+    </div>
+
+    <div class="report-title-area">
+        <h1>BÁO CÁO THẨM ĐỊNH & PHÊ DUYỆT CHIẾN LƯỢC KINH DOANH</h1>
+        <div class="subtitle">ỨNG DỤNG HỆ THỐNG HỖ TRỢ RA QUYẾT ĐỊNH ĐA TIÊU CHÍ (AHP - SAATY) & TRỢ LÝ AI</div>
+        <div class="meta">Thời điểm tạo lập: 26/10/2026 09:30:00 • Kiểm tra nhất quán logic Saaty CR = 0.0152 (&lt; 0.10)</div>
+    </div>
+
+    <div class="kpi-grid">
+        <div class="kpi-card emerald">
+            <div class="kpi-label">🏆 PHƯƠNG ÁN TỐI ƯU SỐ 1</div>
+            <div class="kpi-value" style="color: #059669;">Samsung Galaxy S24 Ultra</div>
+            <div class="kpi-sub">Điểm AHP: <strong>0.9102</strong> • <span class="tag-status selected">PHÊ DUYỆT</span></div>
+        </div>
+        <div class="kpi-card indigo">
+            <div class="kpi-label">⚖️ ĐỘ NHẤT QUÁN SAATY CR</div>
+            <div class="kpi-value" style="color: #4F46E5;">CR = 0.0152 (1.52%)</div>
+            <div class="kpi-sub">ĐẠT CHUẨN LOGIC TOÁN HỌC (&lt; 10%)</div>
+        </div>
+        <div class="kpi-card sky">
+            <div class="kpi-label">💰 DOANH THU KỲ VỌNG</div>
+            <div class="kpi-value" style="color: #0284C7;">1,200 Triệu VNĐ</div>
+            <div class="kpi-sub">Biên Lợi Nhuận Gộp: <strong>26.29%</strong></div>
+        </div>
+        <div class="kpi-card amber">
+            <div class="kpi-label">📦 PHÂN BỔ QUYẾT NGHỊ</div>
+            <div class="kpi-value" style="color: #D97706;">1 Chọn • 2 Thăm Dò • 2 Xả</div>
+            <div class="kpi-sub">Tổng số 5 phương án ứng viên</div>
+        </div>
+    </div>
+
+    <div class="section-header"><span>📊</span> I. BIỂU ĐỒ TRỰC QUAN ĐIỂM SỐ AHP VÀ TRỌNG SỐ TIÊU CHÍ</div>
+    <div class="visual-container">
+        <div class="chart-grid">
+            <div class="column-chart">
+                <div class="chart-inner-title">So Sánh Điểm Số AHP Đa Tiêu Chí (Benchmark 0.60)</div>
+                <div class="chart-bars-wrap">
+                    <div class="benchmark-line"><span class="benchmark-tag">Ngưỡng Nhập Hàng (0.6000)</span></div>
+
+                    <div class="bar-col">
+                        <div class="bar-score-pill">0.9102</div>
+                        <div class="bar-fill rank1" style="height: 182px;"><span class="crown-icon">👑</span></div>
+                        <div class="bar-labels">
+                            <span class="bar-rank-badge badge-r1">#1</span>
+                            <div class="bar-sku-name" title="Samsung Galaxy S24 Ultra 256GB">Samsung S24</div>
+                        </div>
+                    </div>
+
+                    <div class="bar-col">
+                        <div class="bar-score-pill">0.7412</div>
+                        <div class="bar-fill rank-mid" style="height: 148px;"></div>
+                        <div class="bar-labels">
+                            <span class="bar-rank-badge badge-rm">#2</span>
+                            <div class="bar-sku-name" title="Dell Gaming G15 5530 i7">Dell G15</div>
+                        </div>
+                    </div>
+
+                    <div class="bar-col">
+                        <div class="bar-score-pill">0.6850</div>
+                        <div class="bar-fill rank-mid" style="height: 137px;"></div>
+                        <div class="bar-labels">
+                            <span class="bar-rank-badge badge-rm">#3</span>
+                            <div class="bar-sku-name" title="Apple Watch Ultra 2 GPS + Cellular">Apple Watch</div>
+                        </div>
+                    </div>
+
+                    <div class="bar-col">
+                        <div class="bar-score-pill">0.5200</div>
+                        <div class="bar-fill rank-low" style="height: 104px;"></div>
+                        <div class="bar-labels">
+                            <span class="bar-rank-badge badge-rl">#4</span>
+                            <div class="bar-sku-name" title="Acer Aspire M5510 Office">Acer M5510</div>
+                        </div>
+                    </div>
+
+                    <div class="bar-col">
+                        <div class="bar-score-pill">0.3800</div>
+                        <div class="bar-fill rank-low" style="height: 76px;"></div>
+                        <div class="bar-labels">
+                            <span class="bar-rank-badge badge-rl">#5</span>
+                            <div class="bar-sku-name" title="Loa Bluetooth SoundMax BT-01">Loa BT-01</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="weights-container">
+                <div class="chart-inner-title">Trọng Số 5 Tiêu Chí Saaty (Criteria Weights)</div>
+                <div class="weight-row">
+                    <div class="weight-head"><span>C1: Biên Lợi Nhuận Gộp</span><span>41.62%</span></div>
+                    <div class="weight-track"><div class="weight-bar" style="width: 41.62%;"></div></div>
+                </div>
+                <div class="weight-row">
+                    <div class="weight-head"><span>C2: Doanh Thu Kỳ Vọng</span><span>26.18%</span></div>
+                    <div class="weight-track"><div class="weight-bar" style="width: 26.18%;"></div></div>
+                </div>
+                <div class="weight-row">
+                    <div class="weight-head"><span>C3: Nhu Cầu Thị Trường</span><span>16.03%</span></div>
+                    <div class="weight-track"><div class="weight-bar" style="width: 16.03%;"></div></div>
+                </div>
+                <div class="weight-row">
+                    <div class="weight-head"><span>C4: An Toàn Vốn / Rủi Ro</span><span>9.81%</span></div>
+                    <div class="weight-track"><div class="weight-bar" style="width: 9.81%;"></div></div>
+                </div>
+                <div class="weight-row">
+                    <div class="weight-head"><span>C5: Tiết Kiệm Chi Phí Mkt</span><span>6.36%</span></div>
+                    <div class="weight-track"><div class="weight-bar" style="width: 6.36%;"></div></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="section-header"><span>📋</span> II. BẢNG TỔNG HỢP XẾP HẠNG THỨ BẬC CÁC PHƯƠNG ÁN (AHP QUANTITATIVE RANKING)</div>
+    <table class="dss-table">
+        <thead>
+            <tr>
+                <th>Hạng</th>
+                <th>Mã SKU</th>
+                <th>Phương Án / Sản Phẩm</th>
+                <th>Giá Niêm Yết</th>
+                <th>Điểm AHP</th>
+                <th>Kết Quả Thẩm Định</th>
+                <th>Chỉ Đạo Điều Hành</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align: center;"><div class="rank-circle rk-1">1</div></td>
+                <td><strong>PRD_S24_ULTRA</strong></td>
+                <td><strong>Samsung Galaxy S24 Ultra 256GB</strong></td>
+                <td>31,990,000 đ</td>
+                <td><strong style="color: var(--primary);">0.9102</strong></td>
+                <td><span class="badge-pill badge-selected">✓ PHÊ DUYỆT (Nhập Lớn)</span></td>
+                <td style="font-size: 12px; color: #475569;">Phê duyệt ký hợp đồng nhập lớn (150 máy); 50% ngân sách Mkt</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;"><div class="rank-circle rk-mid">2</div></td>
+                <td><strong>PRD_DELL_G15</strong></td>
+                <td><strong>Dell Gaming G15 5530 i7</strong></td>
+                <td>28,490,000 đ</td>
+                <td><strong style="color: var(--primary);">0.7412</strong></td>
+                <td><span class="badge-pill badge-review">● XEM XÉT (Nhập Thăm Dò)</span></td>
+                <td style="font-size: 12px; color: #475569;">Nhập thăm dò theo đơn cọc (30-40 máy)</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;"><div class="rank-circle rk-mid">3</div></td>
+                <td><strong>PRD_AW_ULTRA2</strong></td>
+                <td><strong>Apple Watch Ultra 2 GPS + Cellular</strong></td>
+                <td>21,990,000 đ</td>
+                <td><strong style="color: var(--primary);">0.6850</strong></td>
+                <td><span class="badge-pill badge-review">● XEM XÉT (Nhập Thăm Dò)</span></td>
+                <td style="font-size: 12px; color: #475569;">Nhập thăm dò theo đơn cọc (30-40 máy)</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;"><div class="rank-circle rk-mid">4</div></td>
+                <td><strong>PRD_ACER_M5510</strong></td>
+                <td><strong>Acer Aspire M5510 Office</strong></td>
+                <td>14,990,000 đ</td>
+                <td><strong style="color: var(--primary);">0.5200</strong></td>
+                <td><span class="badge-pill badge-rejected">✕ LOẠI BỎ (Xả Tồn Kho)</span></td>
+                <td style="font-size: 12px; color: #475569;">Dừng nhập mới; xả kho giảm 40% thu hồi vốn</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;"><div class="rank-circle rk-mid">5</div></td>
+                <td><strong>PRD_SPK_BT01</strong></td>
+                <td><strong>Loa Bluetooth SoundMax BT-01</strong></td>
+                <td>1,250,000 đ</td>
+                <td><strong style="color: var(--primary);">0.3800</strong></td>
+                <td><span class="badge-pill badge-rejected">✕ LOẠI BỎ (Xả Tồn Kho)</span></td>
+                <td style="font-size: 12px; color: #475569;">Dừng nhập mới; tặng quà combo hoặc xả tồn</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="section-header"><span>🤖</span> III. KẾT LUẬN & CHỈ ĐẠO ĐIỀU HÀNH KINH DOANH (+AI STRATEGIC DIRECTIVES)</div>
+
+    <div class="directive-card opt-1">
+        <div class="directive-title">📥 1. KẾ HOẠCH NHẬP HÀNG CHỦ LỰC (SELECTED - QUY MÔ LỚN)</div>
+        <div class="directive-body">
+            <ul>
+                <li><strong>Mặt hàng chiến lược:</strong> Samsung Galaxy S24 Ultra 256GB (Điểm AHP: <strong>0.9102</strong> - Quán quân toàn hệ thống).</li>
+                <li><strong>Số lượng phê duyệt nhập:</strong> Phê duyệt ký hợp đồng nhập ngay lô <strong>150 chiếc</strong> trong đợt nhập hàng đầu tiên Quý 4/2026.</li>
+                <li><strong>Phân bổ tài chính & Marketing:</strong> Giải ngân <strong>50% tổng ngân sách tiếp thị</strong> của quý cho chiến dịch truyền thông đa kênh, mở bán độc quyền và chương trình thu cũ đổi mới (Trade-in).</li>
+                <li><strong>Luận chứng kinh doanh:</strong> Dẫn đầu tuyệt đối ở 2 tiêu chí trọng số chi phối lớn nhất (Biên lợi nhuận gộp 41.62% và Doanh thu kỳ vọng 26.18%), vòng quay vốn dự kiến dưới 45 ngày.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="directive-card opt-2">
+        <div class="directive-title">🔍 2. KẾ HOẠCH NHẬP HÀNG THĂM DÒ (UNDER REVIEW - THẬN TRỌNG & LINH HOẠT)</div>
+        <div class="directive-body">
+            <ul>
+                <li><strong>Mặt hàng tiềm năng:</strong> Dell Gaming G15 5530 (Hạng 2 - Điểm: 0.7412) và Apple Watch Ultra 2 (Hạng 3 - Điểm: 0.6850).</li>
+                <li><strong>Số lượng phê duyệt nhập:</strong> Giới hạn định mức từ <strong>30 - 40 chiếc</strong> cho mỗi dòng sản phẩm.</li>
+                <li><strong>Cơ chế giải ngân an toàn:</strong> Chỉ kích hoạt giải ngân đặt hàng đối ứng theo số lượng khách hàng đã thanh toán tiền đặt cọc (Pre-order) thực tế để bảo vệ dòng tiền lưu động.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="directive-card opt-3">
+        <div class="directive-title">🚨 3. KẾ HOẠCH DỪNG NHẬP & GIẢI PHÓNG HÀNG TỒN (REJECTED - THU HỒI DÒNG TIỀN)</div>
+        <div class="directive-body">
+            <ul>
+                <li><strong>Mặt hàng cảnh báo:</strong> Acer Aspire M5510 (Hạng 4 - Điểm: 0.5200) và Loa Bluetooth BT-01 (Hạng 5 - Điểm: 0.3800).</li>
+                <li><strong>Chỉ đạo điều hành:</strong> <strong>DỪNG NHẬP MỚI 100%</strong> đối với các sản phẩm này do điểm AHP không đạt ngưỡng an toàn (&lt; 0.60) và vòng quay tồn kho trên 90 ngày.</li>
+                <li><strong>Chiến dịch giải phóng kho:</strong> Kích hoạt chương trình <strong>chiết khấu thanh lý 40%</strong> hoặc đóng gói làm quà tặng combo kèm laptop cao cấp để thu hồi vốn lưu động trước ngày 31/12/2026.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="signature-section">
+        <div class="section-header" style="border: none; margin-bottom: 24px;"><span>✍️</span> IV. HỘI ĐỒNG THẨM ĐỊNH & BAN ĐIỀU HÀNH KÝ PHÊ DUYỆT</div>
+        <div class="sig-grid">
+            <div>
+                <div class="sig-title">TRƯỞNG PHÒNG KINH DOANH</div>
+                <div class="sig-role">(Đã thẩm định nhu cầu & thị trường)</div>
+                <div class="sig-space"><div class="stamp-verified">ĐÃ XÁC NHẬN</div></div>
+                <div class="sig-name">Nguyễn Văn A</div>
+            </div>
+            <div>
+                <div class="sig-title">GIÁM ĐỐC TÀI CHÍNH (CFO)</div>
+                <div class="sig-role">(Đã kiểm soát ngân sách & rủi ro)</div>
+                <div class="sig-space"><div class="stamp-verified">ĐÃ THẨM TRA</div></div>
+                <div class="sig-name">Trần Thị B</div>
+            </div>
+            <div>
+                <div class="sig-title">TỔNG GIÁM ĐỐC (CEO)</div>
+                <div class="sig-role">(Phê duyệt quyết nghị thi hành)</div>
+                <div class="sig-space"><div class="stamp-circle">DSS RETAIL<br>ĐÃ PHÊ DUYỆT<br>2026</div></div>
+                <div class="sig-name">Lê Hoàng C</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="report-footer">
+        Bản quyền © 2026 DSS Retail Studio • Mã lưu trữ: DSS-DOC-2026-Q4-ENT • Tài liệu lưu hành nội bộ mật
+    </div>
+
+</div>
+</body>
+</html>
