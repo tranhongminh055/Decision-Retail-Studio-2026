@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - DSS Retail Studio 2026 | Vibio Technology</title>
+    <meta name="description" content="Official Privacy Policy for DSS Retail Studio 2026 published by Vibio Technology on Microsoft Store.">
+    <meta name="author" content="Vibio Technology">
+    <meta name="robots" content="index, follow">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #0b0f19;
+            --bg-secondary: #111827;
+            --bg-card: rgba(17, 24, 39, 0.75);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(59, 130, 246, 0.4);
+            --accent-blue: #3b82f6;
+            --accent-indigo: #6366f1;
+            --accent-cyan: #06b6d4;
+            --accent-emerald: #10b981;
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+            --radius-md: 12px;
+            --radius-lg: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 10%, rgba(59, 130, 246, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 45%);
+            background-attachment: fixed;
+        }
+
+        /* Container */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 24px;
+            width: 100%;
+        }
+
+        /* Header Navigation */
+        .header {
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(16px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 0;
+        }
+
+        .brand-group {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+        }
+
+        .app-logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .brand-text h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-text p {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .lang-switch-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .lang-switch-btn:hover {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: var(--accent-blue);
+        }
+
+        .btn-print {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-print:hover {
+            color: var(--text-primary);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            padding: 50px 0 30px;
+            text-align: left;
+        }
+
+        .badge-verified {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #34d399;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .badge-verified svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .hero-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.3rem;
+            font-weight: 800;
+            line-height: 1.25;
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ffffff 40%, #93c5fd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            max-width: 720px;
+            line-height: 1.6;
+        }
+
+        /* Metadata Card */
+        .meta-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 20px 24px;
+            margin: 24px 0 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            backdrop-filter: blur(12px);
+            box-shadow: var(--card-shadow);
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .meta-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .meta-value {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .meta-value code {
+            font-family: monospace;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.88rem;
+            color: #93c5fd;
+        }
+
+        /* Content Sections */
+        .policy-content {
+            margin-bottom: 60px;
+        }
+
+        .policy-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(12px);
+            box-shadow: var(--card-shadow);
+            transition: border-color 0.2s ease;
+        }
+
+        .policy-section:hover {
+            border-color: var(--border-hover);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .section-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .policy-section h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+
+        .policy-section p {
+            color: #d1d5db;
+            margin-bottom: 14px;
+            font-size: 0.98rem;
+        }
+
+        .policy-section p:last-child {
+            margin-bottom: 0;
+        }
+
+        .policy-section ul {
+            margin: 14px 0 16px 20px;
+            color: #d1d5db;
+        }
+
+        .policy-section li {
+            margin-bottom: 8px;
+            padding-left: 4px;
+        }
+
+        .policy-section strong {
+            color: #ffffff;
+        }
+
+        .highlight-box {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 4px solid var(--accent-blue);
+            border-radius: 0 8px 8px 0;
+            padding: 16px 18px;
+            margin: 16px 0;
+        }
+
+        .highlight-box p {
+            color: #bfdbfe;
+            font-size: 0.92rem;
+            margin: 0;
+        }
+
+        .contact-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(99, 102, 241, 0.12));
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 36px;
+            text-align: center;
+        }
+
+        .contact-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .contact-card p {
+            color: var(--text-secondary);
+            margin-bottom: 18px;
+            font-size: 0.95rem;
+        }
+
+        .contact-email-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent-blue);
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+        }
+
+        .contact-email-btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+            background: rgba(11, 15, 25, 0.95);
+            padding: 30px 0;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer a:hover {
+            color: var(--accent-blue);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 640px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .hero-title {
+                font-size: 1.8rem;
+            }
+
+            .policy-section {
+                padding: 24px 20px;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: #ffffff;
+                color: #111827;
+            }
+            .header, .footer, .header-actions, .lang-switch-btn, .btn-print {
+                display: none;
+            }
+            .policy-section, .meta-card {
+                border: 1px solid #e5e7eb;
+                background: #ffffff;
+                box-shadow: none;
+            }
+            .hero-title {
+                color: #111827;
+                -webkit-text-fill-color: initial;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sticky Header -->
+    <header class="header">
+        <div class="container header-content">
+            <a href="#" class="brand-group">
+                <img src="images/app_logo.png" alt="DSS Retail Studio 2026 Logo" class="app-logo" onerror="this.style.display='none'">
+                <div class="brand-text">
+                    <h1>DSS Retail Studio 2026</h1>
+                    <p>Publisher: Vibio Technology</p>
+                </div>
+            </a>
+            <div class="header-actions">
+                <button class="lang-switch-btn" id="langToggleBtn" onclick="toggleLanguage()">
+                    <span id="langIcon">🌐</span>
+                    <span id="langLabel">Tiếng Việt</span>
+                </button>
+                <button class="btn-print" onclick="window.print()" title="Print or save as PDF">🖨️ Print</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+
+        <!-- Hero Section -->
+        <section class="hero-banner">
+            <div class="badge-verified">
+                <svg viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span id="badgeText">Microsoft Store Certified Policy</span>
+            </div>
+            <h1 class="hero-title" id="pageTitle">Privacy Policy</h1>
+            <p class="hero-subtitle" id="pageSubtitle">
+                This document describes how DSS Retail Studio 2026 handles your information. We prioritize customer data confidentiality and operate under a strict offline-first architectural model.
+            </p>
+        </section>
+
+        <!-- Product Metadata Card -->
+        <div class="meta-card">
+            <div class="meta-item">
+                <span class="meta-label" id="metaAppLabel">Application</span>
+                <span class="meta-value">DSS Retail Studio 2026</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label" id="metaPublisherLabel">Publisher</span>
+                <span class="meta-value">Vibio Technology</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label" id="metaProductIdLabel">Store Product ID</span>
+                <span class="meta-value"><code>9NJM7T713PM4</code></span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label" id="metaDateLabel">Last Updated</span>
+                <span class="meta-value">October 30, 2026</span>
+            </div>
+        </div>
+
+        <!-- ENGLISH CONTENT -->
+        <div class="policy-content" id="contentEn">
+            <!-- 1. Introduction -->
+            <article class="policy-section">
+                <div class="section-header">
+                    <div class="section-icon">📋</div>
+                    <h2>1. Overview & Commitment</h2>
+                </div>
+                <p>
+                    <strong>Vibio Technology</strong> ("we", "our", or "us") is dedicated to protecting the privacy and security of users of <strong>DSS Retail Studio 2026</strong> ("the Application").
+                </p>
+                <p>
+                    DSS Retail Studio 2026 is an enterprise-grade Decision Support System engineered for retail and sales strategy analysis. It incorporates analytic hierarchy process (Saaty AHP) and mathematical optimization (Knapsack Solver) to help retailers make informed procurement, inventory allocation, and marketing budget decisions.
+                </p>
+                <div class="highlight-box">
+                    <p>
+                        <strong>Key Commitment:</strong> DSS Retail Studio 2026 is architected as an <strong>offline-first desktop application</strong>. We do <strong>not</strong> collect, track, harvest, sell, or transmit your business data or personal identity information to any external server or third party.
+                    </p>
+                </div>
+            </article>
+
+            <!-- 2. Personal Information Collection -->
+            <article class="policy-section">
+                <div class="section-header">
+                    <div class="section-icon">🛡️</div>
+                    <h2>2. Information We Do NOT Collect</h2>
+                </div>
+                <p>
+                    When using DSS Retail Studio 2026, we do <strong>not</strong> collect or process:
+                </p>
+                <ul>
+                    <li><strong>Personal Identifiable Information (PII):</strong> We do not collect names, phone numbers, home addresses, national IDs, or personal contact lists.</li>
+                    <li><strong>Financial Information:</strong> We do not collect bank accounts, credit card credentials, or payment transaction details.</li>
+                    <li><strong>Biometric Data:</strong> No facial recognition, fingerprint, or biometric identifiers are captured or processed.</li>
+                    <li><strong>Location Data:</strong> We do not track or record your device's geographical GPS location or network positioning.</li>
+                    <li><strong>Hardware & Device Identifiers:</strong> We do not gather unique device IDs, MAC addresses, or advertising identifiers.</li>
+                </ul>
+            </article>
+
+            <!-- 3. Local Data Storage & Processing -->
+            <article class="policy-section">
+                <div class="section-header">
+                    <div class="section-icon">💾</div>
+                    <h2>3. Local Data Storage & Ownership</h2>
+                </div>
+                <p>
+                    All computational algorithms, retail datasets, product catalogs, customer profiles, criteria matrix evaluations, and sales forecasts remain exclusively on the user’s local workstation:
+                </p>
+                <ul>
+                    <li><strong>Local Database:</strong> Data is persisted in a local database (SQLite / Local SQL Server instance) residing in the application's isolated local app data directory.</li>
+                    <li><strong>User Ownership:</strong> You retain 100% legal ownership and control over all retail data entered into the software.</li>
+                    <li><strong>Zero Cloud Sync:</strong> No data synchronization or background cloud backup to external remote servers is conducted without explicit manual user action.</li>
+                </ul>
+            </article>
+
+            <!-- 4. Windows App Permissions -->
+            <article class="policy-section">
+                <div class="section-header">
+                    <div class="section-icon">🔒</div>
+                    <h2>4. System Permissions & Hardware Access</h2>
+                </div>
+                <p>
+                    DSS Retail Studio 2026 operates as a native Windows MSIX desktop application. It requires only standard execution capabilities:
+                </p>
+                <ul>
+                    <li><strong>No Camera / Microphone Access:</strong> The application does not request, enable, or interface with any webcams, audio inputs, or recording devices.</li>
+                    <li><strong>No Location Services:</strong> The application does not access Windows Location APIs.</li>
+                    <li><strong>Local File System Access:</strong> The application only reads and writes files that you explicitly select (e.g., exporting analytical Excel reports, CSV matrices, or database backups).</li>
+                </ul>
+            </article>
+
+            <!-- 5. Third-Party Services -->
+            <article class="policy-section">
+                <div class="section-header">
+                    <div class="section-icon">🚫</div>
+                    <h2>5. Third-Party Services & Telemetry</h2>
+                </div>
+                <p>
+                    DSS Retail Studio 2026 contains:
+                </p>
+                <ul>
+                    <li><strong>No Advertising SDKs:</strong> There are zero banner ads, pop-ups, or commercial advertising networks integrated into the application.</li>
+                    <li><strong>No Behavioral Tracking / Analytics:</strong> We do not embed telemetry trackers (such as Google Analytics, Mixpanel, or Facebook Pixel).</li>
+                    <li><strong>No Data Brokering:</strong> We will never sell, rent, or trade your data to third parties.</li>
+                </ul>
+            </article>
+
+            <!-- 6. Data Deletion & User Rights -->
+            <article class="policy-section">
+                <div class="section-header">
+                    <div class="section-icon">🗑️</div>
+                    <h2>6. Data Retention & Deletion</h2>
+                </div>
+                <p>
+                    Because all data is stored locally on your machine, you have complete authority over your data retention:
+                </p>
+                <ul>
+                    <li>You can reset or wipe the local database directly within the software settings.</li>
+                    <li>Uninstalling DSS Retail Studio 2026 via Windows Settings or Control Panel removes the application and its local data cache.</li>
+                </ul>
+            </article>
+
+            <!-- 7. Children's Privacy -->
+            <article class="policy-section">
+                <div class="section-header">
+                    <div class="section-icon">👶</div>
+                    <h2>7. Children's Privacy (COPPA Compliance)</h2>
+                </div>
+                <p>
+                    DSS Retail Studio 2026 is designed strictly for enterprise management, retail business analysis, and professional academic decision-making. We do not direct the Application to children under the age of 13 (or under 16 in certain jurisdictions), nor do we knowingly solicit or collect data from minors.
+                </p>
+            </article>
+
+            <!-- 8. Updates to this Policy -->
+            <article class="policy-section">
+                <div class="section-header">
+                    <div class="section-icon">🔄</div>
+                    <h2>8. Policy Updates</h2>
+                </div>
+                <p>
+                    We may update our Privacy Policy periodically to reflect enhancements in the software or regulatory standards. Any revisions will be published immediately on this webpage with a revised "Last Updated" date.
+                </p>
+            </article>
+
+            <!-- 9. Contact -->
+            <div class="contact-card">
+                <h3>Need Assistance or Have Questions?</h3>
+                <p>If you have any questions or inquiries regarding this Privacy Policy or our security standards, please contact the Vibio Technology team:</p>
+                <a href="mailto:mt1479233@gmail.com?subject=DSS%20Retail%20Studio%202026%20Privacy%20Inquiry" class="contact-email-btn">
+                    <span>✉️</span>
+                    <span>Contact Support: mt1479233@gmail.com</span>
+                </a>
+                <p style="margin-top: 14px; font-size: 0.85rem; color: var(--text-muted);">
+                    Publisher: Vibio Technology &bull; Product ID: 9NJM7T713PM4
+                </p>
+            </div>
+        </div>
+
+        <!-- VIETNAMESE CONTENT (Initially Hidden) -->
+        <div class="policy-content" id="contentVi" style="display: none;">
+            <!-- 1. Tong quan -->
+            <article class="policy-section">
+                <div class="section-header">
+                    <div class="section-icon">📋</div>
+                    <h2>1. Tổng Quan & Cam Kết Bảo Mật</h2>
+                </div>
+                <p>
+                    <strong>Vibio Technology</strong> cam kết bảo vệ toàn diện quyền riêng tư và bảo mật thông tin của khách hàng sử dụng phần mềm <strong>DSS Retail Studio 2026</strong> ("Ứng dụng").
+                </p>
+                <p>
+                    DSS Retail Studio 2026 là Hệ thống hỗ trợ ra quyết định kinh doanh bán lẻ ứng dụng mô hình phân tích thứ bậc Saaty AHP và giải thuật tối ưu hóa Knapsack Solver nhằm hoạch định danh mục sản phẩm, phân bổ ngân sách nhập hàng và chiến lược bán hàng.
+                </p>
+                <div class="highlight-box">
+                    <p>
+                        <strong>Cam kết cốt lõi:</strong> DSS Retail Studio 2026 được phát triển theo mô hình <strong>Offline-First Desktop</strong>. Chúng tôi <strong>không</strong> thu thập, lưu trữ, mua bán hay truyền tải bất kỳ dữ liệu cá nhân hay dữ liệu kinh doanh nào của người dùng về máy chủ từ xa.
+                    </p>
+                </div>
+            </article>
+
+            <!-- 2. Thong tin khong thu thap -->
+            <article class="policy-section">
+                <div class="section-header">
+                    <div class="section-icon">🛡️</div>
+                    <h2>2. Dữ Liệu Chúng Tôi KHÔNG Thu Thập</h2>
+                </div>
+                <p>
+                    Khi bạn cài đặt và vận hành DSS Retail Studio 2026, ứng dụng hoàn toàn không thu thập:
+                </p>
+                <ul>
+                    <li><strong>Thông tin nhận dạng cá nhân (PII):</strong> Không thu thập danh tính, số điện thoại, địa chỉ cư trú, căn cước công dân hay danh bạ.</li>
+                    <li><strong>Thông tin tài chính:</strong> Không thu thập số tài khoản ngân hàng, thông tin thẻ tín dụng hay chi tiết thanh toán.</li>
+                    <li><strong>Dữ liệu sinh trắc học:</strong> Không ghi nhận khuôn mặt, vân tay hay bất kỳ dấu hiệu sinh trắc học nào.</li>
+                    <li><strong>Vị trí địa lý:</strong> Không truy cập GPS hay vị trí mạng của thiết bị.</li>
+                    <li><strong>Định danh thiết bị:</strong> Không thu thập mã quảng cáo hay mã phần cứng thiết bị.</li>
+                </ul>
+            </article>
+
+            <!-- 3. Luu tru cuc bo -->
+            <article class="policy-section">
+                <div class="section-header">
+                    <div class="section-icon">💾</div>
+                    <h2>3. Lưu Trữ Dữ Liệu Cục Bộ & Quyền Sở Hữu</h2>
+                </div>
+                <p>
+                    Mọi dữ liệu phục vụ phân tích quyết định đều nằm hoàn toàn trên máy tính của người dùng:
+                </p>
+                <ul>
+                    <li><strong>Cơ sở dữ liệu cục bộ:</strong> Dữ liệu được lưu trong cơ sở dữ liệu nội bộ (SQLite / Local SQL Server) nằm trong thư mục cài đặt bảo mật của ứng dụng trên hệ điều hành Windows.</li>
+                    <li><strong>Toàn quyền sở hữu:</strong> Khách hàng nắm giữ 100% quyền sở hữu đối với danh mục hàng hóa, bảng báo giá, khách hàng và tiêu chí ma trận AHP đã nhập.</li>
+                    <li><strong>Không đồng bộ đám mây trái phép:</strong> Ứng dụng không tự ý tải dữ liệu lên bất kỳ máy chủ đám mây nào.</li>
+                </ul>
+            </article>
+
+            <!-- 4. Quyen he thong -->
+            <article class="policy-section">
+                <div class="section-header">
+                    <div class="section-icon">🔒</div>
+                    <h2>4. Quyền Hệ Thống & Phần Cứng</h2>
+                </div>
+                <p>
+                    Là phần mềm desktop MSIX tiêu chuẩn cho Windows 10/11, ứng dụng tuân thủ nghiêm ngặt các giới hạn an toàn:
+                </p>
+                <ul>
+                    <li><strong>Không truy cập Camera / Micro:</strong> Không yêu cầu và không sử dụng thiết bị ghi âm, ghi hình.</li>
+                    <li><strong>Không định vị:</strong> Không kích hoạt dịch vụ Windows Location.</li>
+                    <li><strong>Truy cập tệp do người dùng chỉ định:</strong> Chỉ thao tác với các tệp khi người dùng chủ động chọn (ví dụ: Xuất báo cáo Excel, sao lưu cơ sở dữ liệu).</li>
+                </ul>
+            </article>
+
+            <!-- 5. Ben thu ba -->
+            <article class="policy-section">
+                <div class="section-header">
+                    <div class="section-icon">🚫</div>
+                    <h2>5. Dịch Vụ Bên Thứ Ba & Quảng Cáo</h2>
+                </div>
+                <p>
+                    DSS Retail Studio 2026:
+                </p>
+                <ul>
+                    <li><strong>Không chứa mã quảng cáo (Ad SDKs):</strong> Không có biểu ngữ, pop-up hay video quảng cáo gây phiền toái.</li>
+                    <li><strong>Không có công cụ theo dõi hành vi:</strong> Không tích hợp Google Analytics, Facebook Pixel hay các tracker thương mại.</li>
+                    <li><strong>Tuyệt đối không bán dữ liệu:</strong> Chúng tôi không kinh doanh dữ liệu dưới bất kỳ hình thức nào.</li>
+                </ul>
+            </article>
+
+            <!-- 6. Xoa du lieu -->
+            <article class="policy-section">
+                <div class="section-header">
+                    <div class="section-icon">🗑️</div>
+                    <h2>6. Xóa Dữ Liệu & Quyền Người Dùng</h2>
+                </div>
+                <p>
+                    Vì dữ liệu lưu trên máy tính của bạn, bạn có toàn quyền:
+                </p>
+                <ul>
+                    <li>Xóa hoặc đặt lại cơ sở dữ liệu bất cứ lúc nào trong bảng điều khiển ứng dụng.</li>
+                    <li>Gỡ bỏ hoàn toàn ứng dụng (Uninstall) qua Windows Settings để xóa sạch phần mềm và bộ nhớ đệm.</li>
+                </ul>
+            </article>
+
+            <!-- 7. Tre em -->
+            <article class="policy-section">
+                <div class="section-header">
+                    <div class="section-icon">👶</div>
+                    <h2>7. Quyền Riêng Tư Của Trẻ Em</h2>
+                </div>
+                <p>
+                    Phần mềm được thiết kế dành cho các nhà quản lý bán lẻ, chuyên gia phân tích và doanh nghiệp. Chúng tôi không hướng mục tiêu đến trẻ em dưới 13 tuổi và không thu thập bất kỳ dữ liệu nào của trẻ em.
+                </p>
+            </article>
+
+            <!-- 8. Cap nhat -->
+            <article class="policy-section">
+                <div class="section-header">
+                    <div class="section-icon">🔄</div>
+                    <h2>8. Cập Nhật Chính Sách</h2>
+                </div>
+                <p>
+                    Chính sách quyền riêng tư có thể được cập nhật để phù hợp với các phiên bản phần mềm mới hoặc quy định pháp lý. Mọi thay đổi sẽ được công bố công khai trên trang web này kèm thời điểm cập nhật.
+                </p>
+            </article>
+
+            <!-- 9. Lien he -->
+            <div class="contact-card">
+                <h3>Cần Hỗ Trợ Hoặc Có Câu Hỏi?</h3>
+                <p>Mọi thắc mắc liên quan đến chính sách quyền riêng tư của DSS Retail Studio 2026, vui lòng liên hệ:</p>
+                <a href="mailto:mt1479233@gmail.com?subject=DSS%20Retail%20Studio%202026%20Privacy%20Inquiry" class="contact-email-btn">
+                    <span>✉️</span>
+                    <span>Liên Hệ: mt1479233@gmail.com</span>
+                </a>
+                <p style="margin-top: 14px; font-size: 0.85rem; color: var(--text-muted);">
+                    Đơn vị phát hành: Vibio Technology &bull; Mã định danh sản phẩm: 9NJM7T713PM4
+                </p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Vibio Technology. All rights reserved.</p>
+            <p style="margin-top: 6px;">
+                DSS Retail Studio 2026 &bull; Official Microsoft Store Publication &bull; Product ID: 9NJM7T713PM4
+            </p>
+        </div>
+    </footer>
+
+    <!-- Script for Language Switch -->
+    <script>
+        let currentLang = 'en';
+
+        function toggleLanguage() {
+            const contentEn = document.getElementById('contentEn');
+            const contentVi = document.getElementById('contentVi');
+            const langLabel = document.getElementById('langLabel');
+            const pageTitle = document.getElementById('pageTitle');
+            const pageSubtitle = document.getElementById('pageSubtitle');
+            const badgeText = document.getElementById('badgeText');
+            const metaAppLabel = document.getElementById('metaAppLabel');
+            const metaPublisherLabel = document.getElementById('metaPublisherLabel');
+            const metaProductIdLabel = document.getElementById('metaProductIdLabel');
+            const metaDateLabel = document.getElementById('metaDateLabel');
+
+            if (currentLang === 'en') {
+                contentEn.style.display = 'none';
+                contentVi.style.display = 'block';
+                langLabel.textContent = 'English';
+                pageTitle.textContent = 'Chính Sách Quyền Riêng Tư';
+                pageSubtitle.textContent = 'Tài liệu công bố chính sách quyền riêng tư của DSS Retail Studio 2026 do Vibio Technology phát hành. Chúng tôi tôn trọng quyền bảo mật dữ liệu doanh nghiệp và vận hành theo mô hình xử lý cục bộ hoàn toàn.';
+                badgeText.textContent = 'Chính Sách Đạt Tiêu Chuẩn Microsoft Store';
+                metaAppLabel.textContent = 'Ứng dụng';
+                metaPublisherLabel.textContent = 'Nhà phát hành';
+                metaProductIdLabel.textContent = 'Mã định danh Store';
+                metaDateLabel.textContent = 'Ngày cập nhật';
+                currentLang = 'vi';
+            } else {
+                contentEn.style.display = 'block';
+                contentVi.style.display = 'none';
+                langLabel.textContent = 'Tiếng Việt';
+                pageTitle.textContent = 'Privacy Policy';
+                pageSubtitle.textContent = 'This document describes how DSS Retail Studio 2026 handles your information. We prioritize customer data confidentiality and operate under a strict offline-first architectural model.';
+                badgeText.textContent = 'Microsoft Store Certified Policy';
+                metaAppLabel.textContent = 'Application';
+                metaPublisherLabel.textContent = 'Publisher';
+                metaProductIdLabel.textContent = 'Store Product ID';
+                metaDateLabel.textContent = 'Last Updated';
+                currentLang = 'en';
+            }
+        }
+    </script>
+</body>
+</html>
