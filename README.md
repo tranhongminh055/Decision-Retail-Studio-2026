@@ -23,6 +23,8 @@ Decision System/
 │   └── DSS_App.csproj                      # Cấu hình dự án .NET 10.0 + Microsoft.Data.SqlClient
 │
 ├── docs/                                   # TÀI LIỆU PHÂN TÍCH, THIẾT KẾ & THUYẾT MINH
+│   ├── TAI_LIEU_THIET_KE_WIREFRAME_GUI_DSS_IS402_NHOM05.docx # Hồ sơ Thiết kế Wireframe GUI & Đặc tả Giao diện (Word)
+│   ├── TAI_LIEU_THIET_KE_WIREFRAME_GUI_DSS_IS402_NHOM05.md   # Bản xem trước Markdown kèm 10 bản vẽ Wireframe
 │   ├── 01_PHAN_TICH_THIET_KE_DATABASE_DSS.md # Chi tiết Task 05 (5.1 -> 5.5, ERD Mermaid, Chuẩn hóa 1NF-3NF)
 │   ├── DATA_DICTIONARY.md                  # Từ điển dữ liệu cho 100% các bảng và thuộc tính
 │   ├── DATASET_DEMO_AND_TEST_CASES.md      # Chi tiết 4 kịch bản kiểm thử (Tốt, Trung bình, Kém, Edge case)

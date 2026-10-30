@@ -19,7 +19,7 @@ namespace DSS_App
     public class AhpResult
     {
         public List<CriterionInfo> Criteria = new List<CriterionInfo>();
-        public bool MatrixComplete;
+        public bool MatrixComplete; // tạo ma trận thành công
         public double LambdaMax;
         public double CI;
         public double RI;

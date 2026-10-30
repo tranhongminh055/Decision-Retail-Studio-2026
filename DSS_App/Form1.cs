@@ -27,6 +27,15 @@ namespace DSS_App
         private Button btnLogout;
         public bool IsLogoutRequested { get; private set; } = false;
         private TabControl tabControl;
+        private DecisionHubPanel pnlDecisionHub;
+        private Panel pnlMainWorkspaceHost;
+        private Panel pnlSolverView;
+        private Panel pnlAlertsView;
+        private Panel pnlSnapshotsView;
+        private Panel pnlWorkflowView;
+        public DssSnapshot? CurrentSnapshot => currentSnapshot;
+        public void RunDSS() => ExecuteDSSModel();
+        public void ApplyScenario(int scenario) => ApplyWhatIfScenario(scenario);
         private bool hasExecutedDSS = false;
        
         private TabPage tabInputFlow;
@@ -306,6 +315,9 @@ namespace DSS_App
             // 1. Header
             BuildHeaderPanel();
 
+            // 1b. Left Decision Hub Panel (4 tính năng theo chiều dọc)
+            pnlDecisionHub = new DecisionHubPanel(this, connectionString);
+
             // 2. TabControl với TabSizeMode.Normal tự động vừa vặn chữ
             tabControl = new TabControl
             {
@@ -322,9 +334,52 @@ namespace DSS_App
             SetupTabAddProduct();
             SetupTabSales();
             SetupTabAI();
+            // 2b. Khởi tạo 4 UI riêng biệt cho 4 tính năng
+            pnlMainWorkspaceHost = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(248, 250, 252)
+            };
 
-            this.Controls.Add(tabControl);
-            tabControl.BringToFront();
+            pnlSolverView = pnlDecisionHub.BuildSolverFullView();
+            pnlAlertsView = pnlDecisionHub.BuildAlertsFullView();
+            pnlSnapshotsView = pnlDecisionHub.BuildSnapshotsFullView();
+            pnlWorkflowView = pnlDecisionHub.BuildWorkflowFullView();
+
+            pnlMainWorkspaceHost.Controls.Add(tabControl);
+            pnlMainWorkspaceHost.Controls.Add(pnlSolverView);
+            pnlMainWorkspaceHost.Controls.Add(pnlAlertsView);
+            pnlMainWorkspaceHost.Controls.Add(pnlSnapshotsView);
+            pnlMainWorkspaceHost.Controls.Add(pnlWorkflowView);
+
+            this.Controls.Add(pnlMainWorkspaceHost);
+            this.Controls.Add(pnlDecisionHub);
+            this.Controls.Add(headerPanel);
+
+            pnlDecisionHub.SendToBack();
+            headerPanel.SendToBack();
+            pnlMainWorkspaceHost.BringToFront();
+
+            SwitchToView(0);
+        }
+
+        public void SwitchToView(int viewIndex)
+        {
+            if (tabControl == null) return;
+
+            tabControl.Visible = (viewIndex == 0);
+            if (pnlSolverView != null) pnlSolverView.Visible = (viewIndex == 1);
+            if (pnlAlertsView != null) pnlAlertsView.Visible = (viewIndex == 2);
+            if (pnlSnapshotsView != null) pnlSnapshotsView.Visible = (viewIndex == 3);
+            if (pnlWorkflowView != null) pnlWorkflowView.Visible = (viewIndex == 4);
+
+            if (viewIndex == 0) tabControl.BringToFront();
+            else if (viewIndex == 1) { pnlDecisionHub?.RefreshSolverFullView(); pnlSolverView?.BringToFront(); }
+            else if (viewIndex == 2) { pnlDecisionHub?.RefreshAlertsFullView(); pnlAlertsView?.BringToFront(); }
+            else if (viewIndex == 3) { pnlDecisionHub?.RefreshSnapshotsFullView(); pnlSnapshotsView?.BringToFront(); }
+            else if (viewIndex == 4) { pnlDecisionHub?.RefreshWorkflowFullView(); pnlWorkflowView?.BringToFront(); }
+
+            pnlDecisionHub?.SetActiveNavIndex(viewIndex);
         }
 
         private void BuildHeaderPanel()
@@ -438,14 +493,112 @@ namespace DSS_App
                 Margin = new Padding(0, 4, 2, 0)
             };
 
+            Label lblProfileHint = new Label
+            {
+                Text = "▾",
+                Font = new Font("Segoe UI", 9f, FontStyle.Bold),
+                ForeColor = Color.FromArgb(148, 163, 184),
+                AutoSize = true,
+                Margin = new Padding(2, 6, 4, 0),
+                Cursor = Cursors.Hand
+            };
+
             pnlUserInner.Controls.Add(lblAvatar);
             pnlUserInner.Controls.Add(lblUserName);
             pnlUserInner.Controls.Add(lblUserRole);
+            pnlUserInner.Controls.Add(lblProfileHint);
             pnlUserBadge.Controls.Add(pnlUserInner);
+
+            // Bấm vào badge người dùng hiển thị form hồ sơ cá nhân (User Profile Popup)
+            Action openProfile = () =>
+            {
+                try
+                {
+                    using (UserProfileForm profileForm = new UserProfileForm(connectionString))
+                    {
+                        if (profileForm.ShowDialog(this) == DialogResult.OK)
+                        {
+                            UpdateCurrentUserDisplay();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Không thể mở hồ sơ người dùng: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            };
+
+            pnlUserBadge.Cursor = Cursors.Hand;
+            pnlUserInner.Cursor = Cursors.Hand;
+            lblAvatar.Cursor = Cursors.Hand;
+            lblUserName.Cursor = Cursors.Hand;
+            lblUserRole.Cursor = Cursors.Hand;
+            lblProfileHint.Cursor = Cursors.Hand;
+
+            ToolTip tipUser = new ToolTip();
+            string tipText = "👤 Nhấp để xem hồ sơ cá nhân, đổi mật khẩu & quyền hạn hệ thống";
+            tipUser.SetToolTip(pnlUserBadge, tipText);
+            tipUser.SetToolTip(pnlUserInner, tipText);
+            tipUser.SetToolTip(lblAvatar, tipText);
+            tipUser.SetToolTip(lblUserName, tipText);
+            tipUser.SetToolTip(lblUserRole, tipText);
+            tipUser.SetToolTip(lblProfileHint, tipText);
+
+            pnlUserBadge.Click += (s, e) => openProfile();
+            pnlUserInner.Click += (s, e) => openProfile();
+            lblAvatar.Click += (s, e) => openProfile();
+            lblUserName.Click += (s, e) => openProfile();
+            lblUserRole.Click += (s, e) => openProfile();
+            lblProfileHint.Click += (s, e) => openProfile();
+
+            Color normalBg = Color.FromArgb(30, 41, 59);
+            Color hoverBg = Color.FromArgb(51, 65, 85);
+            bool isUserBadgeHovered = false;
+
+            pnlUserBadge.Paint += (s, pe) =>
+            {
+                Color borderClr = isUserBadgeHovered ? Color.FromArgb(56, 189, 248) : Color.FromArgb(71, 85, 105);
+                using (Pen p = new Pen(borderClr, 1.2f))
+                {
+                    pe.Graphics.DrawRectangle(p, 0, 0, pnlUserBadge.Width - 1, pnlUserBadge.Height - 1);
+                }
+            };
+
+            Action setHover = () =>
+            {
+                isUserBadgeHovered = true;
+                pnlUserBadge.BackColor = hoverBg;
+                lblProfileHint.ForeColor = Color.FromArgb(56, 189, 248);
+                pnlUserBadge.Invalidate();
+            };
+            Action setLeave = () =>
+            {
+                isUserBadgeHovered = false;
+                pnlUserBadge.BackColor = normalBg;
+                lblProfileHint.ForeColor = Color.FromArgb(148, 163, 184);
+                pnlUserBadge.Invalidate();
+            };
+
+            pnlUserBadge.MouseEnter += (s, e) => setHover();
+            pnlUserBadge.MouseLeave += (s, e) => setLeave();
+            pnlUserInner.MouseEnter += (s, e) => setHover();
+            pnlUserInner.MouseLeave += (s, e) => setLeave();
+            lblAvatar.MouseEnter += (s, e) => setHover();
+            lblAvatar.MouseLeave += (s, e) => setLeave();
+            lblUserName.MouseEnter += (s, e) => setHover();
+            lblUserName.MouseLeave += (s, e) => setLeave();
+            lblUserRole.MouseEnter += (s, e) => setHover();
+            lblUserRole.MouseLeave += (s, e) => setLeave();
+            lblProfileHint.MouseEnter += (s, e) => setHover();
+            lblProfileHint.MouseLeave += (s, e) => setLeave();
+
             headerPanel.Controls.Add(pnlUserBadge);
 
             // Tự động định vị các pill và nút bên phải khi Resize để không bao giờ bị đè chữ
             headerPanel.Resize += (s, e) => RepositionHeaderControls();
+            this.Shown += (s, e) => RepositionHeaderControls();
+            this.SizeChanged += (s, e) => RepositionHeaderControls();
+            this.Resize += (s, e) => RepositionHeaderControls();
             RepositionHeaderControls();
 
             this.Controls.Add(headerPanel);
@@ -1054,6 +1207,7 @@ namespace DSS_App
         {
             if (dtRank.Rows.Count == 0 || snap.Top == null) return;
             currentSnapshot = snap;
+            if (pnlDecisionHub != null) pnlDecisionHub.RefreshData(snap);
             AltAnalysis top = snap.Top;
 
             // 1. Lựa chọn tối ưu
@@ -3213,6 +3367,13 @@ namespace DSS_App
                 whatIfDiagramPanel.AhpInfo = DssEngine.ComputeAhp(conn, 1);
                 whatIfDiagramPanel.SetData(dtCompare);
             }
+
+            try
+            {
+                currentSnapshot = DssEngine.Recalculate(conn, 1);
+                if (pnlDecisionHub != null) pnlDecisionHub.RefreshData(currentSnapshot);
+            }
+            catch { }
         }
 
         private DssSnapshot? GetOrLoadSnapshot()
@@ -3384,16 +3545,16 @@ namespace DSS_App
 
             if (btnLogout != null)
             {
-                btnLogout.Location = new Point(right - btnLogout.Width, 24);
-                right -= (btnLogout.Width + 10);
+                btnLogout.Location = new Point(Math.Max(10, right - btnLogout.Width), 24);
+                right -= (btnLogout.Width + 12);
             }
 
             if (pnlUserBadge != null)
             {
-                pnlUserBadge.Location = new Point(right - pnlUserBadge.Width, 24);
-                right -= (pnlUserBadge.Width + 10);
+                pnlUserBadge.PerformLayout();
+                pnlUserBadge.Location = new Point(Math.Max(10, right - pnlUserBadge.Width), 24);
+                right -= (pnlUserBadge.Width + 12);
             }
-
         }
 
         private void UpdateCurrentUserDisplay()

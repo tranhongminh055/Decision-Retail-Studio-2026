@@ -1,0 +1,57 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="DSS Retail Studio 2026"
+           Manufacturer="DSS Studio Team"
+           Version="1.0.0.0"
+           UpgradeCode="8F7C6B4E-5D3A-4F2E-9A1B-8C7E6D5F4A3B"
+           Scope="perMachine">
+
+    <MajorUpgrade DowngradeErrorMessage="Đã có phiên bản mới hơn của DSS Retail Studio 2026 được cài đặt trên máy tính." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="DSS Retail Studio 2026">
+        <Directory Id="AssetsFolder" Name="Assets" />
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ApplicationProgramsFolder" Name="DSS Retail Studio 2026" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="DesktopFolder" />
+
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="MainExecutable" Guid="3E4D5F6A-7B8C-9D0E-1F2A-3B4C5D6E7F8A">
+        <File Id="DSS_App_Exe" Source="g:\Decision System\dist\SingleFile\DSS_App.exe" KeyPath="yes">
+          <Shortcut Id="DesktopShortcut"
+                    Directory="DesktopFolder"
+                    Name="DSS Retail Studio 2026"
+                    WorkingDirectory="INSTALLFOLDER"
+                    Advertise="yes" />
+        </File>
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="AssetsComponents" Directory="AssetsFolder">
+      <Component Id="SplashAsset" Guid="4A5B6C7D-8E9F-0A1B-2C3D-4E5F6A7B8C9D">
+        <File Id="Splash_Bg" Source="g:\Decision System\dist\SingleFile\Assets\splash_bg.jpg" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <Component Id="ApplicationShortcut" Directory="ApplicationProgramsFolder" Guid="5B6C7D8E-9F0A-1B2C-3D4E-5F6A7B8C9D0E">
+      <Shortcut Id="AppStartMenuShortcut"
+                Name="DSS Retail Studio 2026"
+                Description="Hệ thống hỗ trợ ra quyết định bán hàng đa mục tiêu theo mô hình Saaty AHP &amp; Knapsack Solver"
+                Target="[!DSS_App_Exe]"
+                WorkingDirectory="INSTALLFOLDER" />
+      <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall" />
+      <RegistryValue Root="HKCU" Key="Software\DSSStudio\DSSRetailStudio2026" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+
+    <Feature Id="MainFeature" Title="DSS Retail Studio 2026" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="AssetsComponents" />
+      <ComponentRef Id="ApplicationShortcut" />
+    </Feature>
+  </Package>
+</Wix>

@@ -297,5 +297,191 @@ namespace DSS_App
                 return false;
             }
         }
+
+        public static bool UpdateProfile(
+            int userId,
+            string fullName,
+            string email,
+            string phoneNumber,
+            string connectionString,
+            out string errorMessage)
+        {
+            errorMessage = string.Empty;
+            if (string.IsNullOrWhiteSpace(fullName))
+            {
+                errorMessage = "Vui lòng nhập Họ và tên đầy đủ!";
+                return false;
+            }
+            string trimFullName = fullName.Trim();
+
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                errorMessage = "Vui lòng nhập địa chỉ Email!";
+                return false;
+            }
+            string trimEmail = email.Trim();
+            if (!trimEmail.Contains("@") || !trimEmail.Contains("."))
+            {
+                errorMessage = "Địa chỉ Email không đúng định dạng!";
+                return false;
+            }
+
+            string trimPhone = string.IsNullOrWhiteSpace(phoneNumber) ? "" : phoneNumber.Trim();
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    // Kiểm tra trùng Email với người dùng khác
+                    string checkEmailSql = "SELECT COUNT(1) FROM dbo.USERS WHERE email = @e AND user_id <> @id";
+                    using (SqlCommand cmdCheckEmail = new SqlCommand(checkEmailSql, conn))
+                    {
+                        cmdCheckEmail.Parameters.AddWithValue("@e", trimEmail);
+                        cmdCheckEmail.Parameters.AddWithValue("@id", userId);
+                        int count = Convert.ToInt32(cmdCheckEmail.ExecuteScalar());
+                        if (count > 0)
+                        {
+                            errorMessage = $"Địa chỉ email '{trimEmail}' đã được người dùng khác đăng ký!";
+                            return false;
+                        }
+                    }
+
+                    // Cập nhật CSDL
+                    string updateSql = @"UPDATE dbo.USERS 
+                                        SET full_name = @fn, email = @e, phone_number = @ph 
+                                        WHERE user_id = @id";
+                    using (SqlCommand cmdUpdate = new SqlCommand(updateSql, conn))
+                    {
+                        cmdUpdate.Parameters.AddWithValue("@fn", trimFullName);
+                        cmdUpdate.Parameters.AddWithValue("@e", trimEmail);
+                        cmdUpdate.Parameters.AddWithValue("@ph", string.IsNullOrEmpty(trimPhone) ? (object)DBNull.Value : trimPhone);
+                        cmdUpdate.Parameters.AddWithValue("@id", userId);
+
+                        int rows = cmdUpdate.ExecuteNonQuery();
+                        if (rows > 0)
+                        {
+                            if (CurrentUser != null && CurrentUser.UserId == userId)
+                            {
+                                CurrentUser.FullName = trimFullName;
+                                CurrentUser.Email = trimEmail;
+                                CurrentUser.PhoneNumber = trimPhone;
+                            }
+                            return true;
+                        }
+                        else
+                        {
+                            errorMessage = "Không tìm thấy người dùng để cập nhật!";
+                            return false;
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex) when (DatabaseGuard.IsConnectionError(ex))
+            {
+                errorMessage = DatabaseGuard.FriendlyConnectionError(ex);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                errorMessage = $"Lỗi khi cập nhật hồ sơ người dùng: {ex.Message}";
+                return false;
+            }
+        }
+
+        public static bool ChangePassword(
+            int userId,
+            string currentPassword,
+            string newPassword,
+            string confirmPassword,
+            string connectionString,
+            out string errorMessage)
+        {
+            errorMessage = string.Empty;
+            if (string.IsNullOrWhiteSpace(currentPassword))
+            {
+                errorMessage = "Vui lòng nhập mật khẩu hiện tại!";
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(newPassword))
+            {
+                errorMessage = "Vui lòng nhập mật khẩu mới!";
+                return false;
+            }
+            if (newPassword.Length < 6)
+            {
+                errorMessage = "Mật khẩu mới phải có ít nhất 6 ký tự!";
+                return false;
+            }
+            if (newPassword != confirmPassword)
+            {
+                errorMessage = "Mật khẩu xác nhận không khớp với mật khẩu mới!";
+                return false;
+            }
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    // Lấy mật khẩu hash hiện tại trong DB
+                    string checkSql = "SELECT password_hash FROM dbo.USERS WHERE user_id = @id";
+                    using (SqlCommand cmdCheck = new SqlCommand(checkSql, conn))
+                    {
+                        cmdCheck.Parameters.AddWithValue("@id", userId);
+                        object result = cmdCheck.ExecuteScalar();
+                        if (result == null || result == DBNull.Value)
+                        {
+                            errorMessage = "Không tìm thấy thông tin tài khoản!";
+                            return false;
+                        }
+
+                        string storedHash = result.ToString() ?? "";
+                        string inputHash = ComputeSha256(currentPassword.Trim());
+                        bool passMatches = string.Equals(storedHash, inputHash, StringComparison.OrdinalIgnoreCase)
+                                        || (storedHash == "123456" && currentPassword.Trim() == "123456")
+                                        || (string.Equals(storedHash, ComputeSha256(""), StringComparison.OrdinalIgnoreCase) && currentPassword.Trim() == "123456");
+
+                        if (!passMatches)
+                        {
+                            errorMessage = "Mật khẩu hiện tại không đúng!";
+                            return false;
+                        }
+                    }
+
+                    // Cập nhật mật khẩu mới
+                    string newHash = ComputeSha256(newPassword.Trim());
+                    string updateSql = "UPDATE dbo.USERS SET password_hash = @p WHERE user_id = @id";
+                    using (SqlCommand cmdUpdate = new SqlCommand(updateSql, conn))
+                    {
+                        cmdUpdate.Parameters.AddWithValue("@p", newHash);
+                        cmdUpdate.Parameters.AddWithValue("@id", userId);
+                        int rows = cmdUpdate.ExecuteNonQuery();
+                        if (rows > 0)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            errorMessage = "Không thể cập nhật mật khẩu mới!";
+                            return false;
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex) when (DatabaseGuard.IsConnectionError(ex))
+            {
+                errorMessage = DatabaseGuard.FriendlyConnectionError(ex);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                errorMessage = $"Lỗi khi đổi mật khẩu: {ex.Message}";
+                return false;
+            }
+        }
     }
 }
+
