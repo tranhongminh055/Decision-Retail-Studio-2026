@@ -11,6 +11,11 @@ os.makedirs(assets_dir, exist_ok=True)
 single_file_exe = r"g:\Decision System\dist\SingleFile\DSS_App.exe"
 shutil.copy2(single_file_exe, os.path.join(layout_dir, "DSS_App.exe"))
 
+# Copy all additional dlls if present (e.g. SNI dll)
+for item in os.listdir(r"g:\Decision System\dist\SingleFile"):
+    if item.endswith(".dll"):
+        shutil.copy2(os.path.join(r"g:\Decision System\dist\SingleFile", item), os.path.join(layout_dir, item))
+
 # Copy splash_bg
 app_assets = os.path.join(layout_dir, "Assets")
 splash_src = r"g:\Decision System\dist\SingleFile\Assets\splash_bg.jpg"
@@ -52,7 +57,7 @@ manifest_content = """<?xml version="1.0" encoding="utf-8"?>
   <Identity
     Name="VibioTechnology.DSSRetailStudio2026"
     Publisher="CN=DD86DAD5-0FBA-48BC-80E9-EC74B158F343"
-    Version="1.0.0.0"
+    Version="1.0.1.0"
     ProcessorArchitecture="x64" />
 
   <Properties>

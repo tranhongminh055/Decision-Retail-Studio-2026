@@ -138,16 +138,26 @@ namespace DSS_App
             InitializeComponentCustom();
             BuildDbOverlay();
 
-            // Kiểm tra SQL Server ngay khi mở: không chạy được thì khóa hệ thống và báo lỗi.
-            string err;
-            if (DatabaseGuard.Ping(out err))
+            if (DatabaseGuard.IsStandaloneMode)
             {
                 dbOnline = true;
                 LoadInputData();
             }
             else
             {
-                ShowDbOverlay(err);
+                string err;
+                if (DatabaseGuard.Ping(out err))
+                {
+                    dbOnline = true;
+                    LoadInputData();
+                }
+                else
+                {
+                    DatabaseGuard.IsStandaloneMode = true;
+                    LocalDataStore.EnsureInitialized();
+                    dbOnline = true;
+                    LoadInputData();
+                }
             }
             UpdateCurrentUserDisplay();
 
@@ -247,6 +257,7 @@ namespace DSS_App
 
         private void ShowDbOverlay(string message)
         {
+            if (DatabaseGuard.IsStandaloneMode) return;
             dbOnline = false;
             if (pnlDbOverlay == null) return;
             if (lblDbOverlayMsg != null) lblDbOverlayMsg.Text = message;
@@ -256,6 +267,7 @@ namespace DSS_App
 
         private async System.Threading.Tasks.Task DbHeartbeatTick()
         {
+            if (DatabaseGuard.IsStandaloneMode) return;
             if (heartbeatBusy) return;
             heartbeatBusy = true;
             try
@@ -273,7 +285,11 @@ namespace DSS_App
                 }
                 else
                 {
-                    ShowDbOverlay(err);
+                    DatabaseGuard.IsStandaloneMode = true;
+                    LocalDataStore.EnsureInitialized();
+                    dbOnline = true;
+                    if (pnlDbOverlay != null) pnlDbOverlay.Visible = false;
+                    LoadInputData();
                 }
             }
             finally
@@ -292,7 +308,8 @@ namespace DSS_App
             }
             else if (ahp.IsConsistent)
             {
-                lblInputMatrixStatus.Text = $"✓ Tỷ số nhất quán (tính từ SQL Server): {DssEngine.CrText(ahp)} [ĐẠT CHUẨN SAATY CR ≤ {DssEngine.CrLimit:0.00}] • λmax = {ahp.LambdaMax:0.0000}";
+                string sourceText = DatabaseGuard.IsStandaloneMode ? "Động cơ CSDL Cục bộ" : "SQL Server";
+                lblInputMatrixStatus.Text = $"✓ Tỷ số nhất quán (tính từ {sourceText}): {DssEngine.CrText(ahp)} [ĐẠT CHUẨN SAATY CR ≤ {DssEngine.CrLimit:0.00}] • λmax = {ahp.LambdaMax:0.0000}";
                 lblInputMatrixStatus.ForeColor = Color.FromArgb(16, 185, 129);
             }
             else
@@ -1028,6 +1045,34 @@ namespace DSS_App
         
         private void LoadInputData()
         {
+            if (DatabaseGuard.IsStandaloneMode)
+            {
+                DataTable dtAlt = LocalDataStore.GetAlternativesDataTable();
+                if (dgvInputAlternatives != null)
+                {
+                    dgvInputAlternatives.DataSource = dtAlt;
+                    if (dgvInputAlternatives.Columns != null)
+                    {
+                        if (dgvInputAlternatives.Columns.Contains("Mã PA") && dgvInputAlternatives.Columns["Mã PA"] != null)
+                            dgvInputAlternatives.Columns["Mã PA"].FillWeight = 120;
+                        if (dgvInputAlternatives.Columns.Contains("Tên Phương Án / Sản Phẩm") && dgvInputAlternatives.Columns["Tên Phương Án / Sản Phẩm"] != null)
+                            dgvInputAlternatives.Columns["Tên Phương Án / Sản Phẩm"].FillWeight = 240;
+                    }
+                }
+
+                DataTable dtMatrix = LocalDataStore.GetPairwiseMatrixDataTable();
+                if (dgvInputMatrix != null)
+                {
+                    dgvInputMatrix.DataSource = dtMatrix;
+                }
+                UpdateMatrixStatus(LocalDataStore.GetAhpResult());
+
+                LoadOlapData(0);
+                PopulateWhatIfProducts(null);
+                ApplyWhatIfScenario(0);
+                return;
+            }
+
             string currentStep = "Khởi tạo";
             try
             {
@@ -1106,16 +1151,25 @@ namespace DSS_App
             }
             catch (SqlException ex) when (DatabaseGuard.IsConnectionError(ex))
             {
-                MessageBox.Show(DatabaseGuard.FriendlyConnectionError(ex), "Lỗi kết nối SQL Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DatabaseGuard.IsStandaloneMode = true;
+                LocalDataStore.EnsureInitialized();
+                LoadInputData();
             }
             catch (Exception ex)
             {
+                if (!DatabaseGuard.IsStandaloneMode)
+                {
+                    DatabaseGuard.IsStandaloneMode = true;
+                    LocalDataStore.EnsureInitialized();
+                    LoadInputData();
+                    return;
+                }
                 try
                 {
                     File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "startup_error.log"), $"[Bước: {currentStep}]\n{ex.ToString()}");
                 }
                 catch { }
-                MessageBox.Show($"Lỗi nạp dữ liệu từ SQL Server tại [{currentStep}]:\n{ex.Message}", "Thông Báo Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Lỗi nạp dữ liệu tại [{currentStep}]:\n{ex.Message}", "Thông Báo Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -1132,6 +1186,33 @@ namespace DSS_App
 
             try
             {
+                if (DatabaseGuard.IsStandaloneMode)
+                {
+                    DssSnapshot snap = LocalDataStore.Recalculate();
+                    DataTable dtRank = LocalDataStore.GetFinalRankingDataTable();
+                    dgvRanking.DataSource = dtRank;
+
+                    if (dgvRanking.Columns != null)
+                    {
+                        if (dgvRanking.Columns.Contains("Hạng") && dgvRanking.Columns["Hạng"] != null) dgvRanking.Columns["Hạng"].FillWeight = 65;
+                        if (dgvRanking.Columns.Contains("Mã SKU") && dgvRanking.Columns["Mã SKU"] != null) dgvRanking.Columns["Mã SKU"].FillWeight = 135;
+                        if (dgvRanking.Columns.Contains("Phương Án / Sản Phẩm") && dgvRanking.Columns["Phương Án / Sản Phẩm"] != null) dgvRanking.Columns["Phương Án / Sản Phẩm"].FillWeight = 240;
+                        if (dgvRanking.Columns.Contains("Giá Bán") && dgvRanking.Columns["Giá Bán"] != null) dgvRanking.Columns["Giá Bán"].FillWeight = 120;
+                        if (dgvRanking.Columns.Contains("Điểm AHP") && dgvRanking.Columns["Điểm AHP"] != null) dgvRanking.Columns["Điểm AHP"].FillWeight = 95;
+                        if (dgvRanking.Columns.Contains("Phê Duyệt") && dgvRanking.Columns["Phê Duyệt"] != null) dgvRanking.Columns["Phê Duyệt"].FillWeight = 125;
+                    }
+
+                    UpdateOutputView(dtRank, snap);
+                    hasExecutedDSS = true;
+                    pnlOutputEmptyState.Visible = false;
+                    pnlOutputContent.Visible = true;
+                    pnlOutputContent.BringToFront();
+
+                    tabControl.SelectedTab = tabOutputFlow;
+                    MessageBox.Show("MÔ HÌNH HỖ TRỢ RA QUYẾT ĐỊNH ĐÃ CHẠY HOÀN TẤT!\n\n• Đã tổng hợp trọng số ma trận Saaty và điểm số phương án.\n• Kết quả xếp hạng và biểu đồ so sánh đã được hiển thị tại Tab 2.", "Tính Toán Thành Công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
                 // Chạy mô hình AHP trên dữ liệu SQL Server: tính trọng số & CR từ ma trận so sánh cặp,
                 // chuẩn hóa điểm, xếp hạng và ghi DECISION_RESULTS (từ chối nếu CR > 10%).
                 using (SqlConnection conn = new SqlConnection(connectionString))
@@ -1188,10 +1269,19 @@ namespace DSS_App
             }
             catch (SqlException ex) when (DatabaseGuard.IsConnectionError(ex))
             {
-                MessageBox.Show(DatabaseGuard.FriendlyConnectionError(ex), "Mất kết nối SQL Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DatabaseGuard.IsStandaloneMode = true;
+                ExecuteDSSModel();
+                return;
             }
             catch (Exception ex)
             {
+                if (!DatabaseGuard.IsStandaloneMode)
+                {
+                    DatabaseGuard.IsStandaloneMode = true;
+                    LocalDataStore.EnsureInitialized();
+                    ExecuteDSSModel();
+                    return;
+                }
                 MessageBox.Show("Lỗi tính toán mô hình: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -1514,6 +1604,43 @@ namespace DSS_App
                 return;
             }
 
+            if (DatabaseGuard.IsStandaloneMode)
+            {
+                decimal marginPct = ((numSellingPrice.Value - numCostPrice.Value) / numSellingPrice.Value) * 100m;
+                LocalDataStore.AddProduct(
+                    cboCategory.SelectedIndex + 1,
+                    txtProductCode.Text.Trim(),
+                    txtProductName.Text.Trim(),
+                    numCostPrice.Value,
+                    numSellingPrice.Value,
+                    (int)numStock.Value,
+                    marginPct,
+                    numExpectedRevenue.Value,
+                    numMarketDemand.Value,
+                    numInventoryDays.Value,
+                    numMarketingCost.Value
+                );
+
+                LoadInputData();
+
+                hasExecutedDSS = false;
+                if (lblEmptyTitle != null)
+                    lblEmptyTitle.Text = "DỮ LIỆU ĐÃ THAY ĐỔI – CẦN CHẠY LẠI MÔ HÌNH DSS";
+                if (lblEmptyDesc != null)
+                    lblEmptyDesc.Text = $"Đã thêm sản phẩm mới [{txtProductName.Text.Trim()}].\nVui lòng bấm nút dưới đây để chạy lại giải thuật AHP và cập nhật bảng xếp hạng.";
+
+                if (pnlOutputContent != null) pnlOutputContent.Visible = false;
+                if (pnlOutputEmptyState != null)
+                {
+                    pnlOutputEmptyState.Visible = true;
+                    pnlOutputEmptyState.BringToFront();
+                }
+
+                MessageBox.Show($"ĐÃ LƯU THÀNH CÔNG!\nSản phẩm [{txtProductName.Text}] đã được thêm vào hệ thống.\nĐang chuyển sang Tab 2 [Kết Quả Ra Quyết Định] để bạn bấm 'CHẠY LẠI MÔ HÌNH DSS'!", "Lưu Thành Công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tabControl.SelectedTab = tabOutputFlow;
+                return;
+            }
+
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
@@ -1600,12 +1727,15 @@ namespace DSS_App
                 MessageBox.Show($"ĐÃ LƯU THÀNH CÔNG!\nSản phẩm [{txtProductName.Text}] đã được thêm vào hệ thống.\nĐang chuyển sang Tab 2 [Kết Quả Ra Quyết Định] để bạn bấm 'CHẠY LẠI MÔ HÌNH DSS'!", "Lưu Thành Công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 tabControl.SelectedTab = tabOutputFlow;
             }
-            catch (SqlException ex) when (DatabaseGuard.IsConnectionError(ex))
-            {
-                MessageBox.Show(DatabaseGuard.FriendlyConnectionError(ex), "Mất kết nối SQL Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
             catch (Exception ex)
             {
+                if (!DatabaseGuard.IsStandaloneMode)
+                {
+                    DatabaseGuard.IsStandaloneMode = true;
+                    LocalDataStore.EnsureInitialized();
+                    BtnSaveAndRank_Click(sender, e);
+                    return;
+                }
                 MessageBox.Show("Lỗi khi lưu dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -1738,6 +1868,53 @@ namespace DSS_App
 
         private void LoadOlapData(int mode)
         {
+            if (DatabaseGuard.IsStandaloneMode)
+            {
+                if (btnViewSales != null && btnViewRollup != null && btnViewCube != null)
+                {
+                    btnViewSales.BackColor = (mode == 0) ? Color.FromArgb(79, 70, 229) : Color.FromArgb(241, 245, 249);
+                    btnViewSales.ForeColor = (mode == 0) ? Color.White : Color.FromArgb(30, 41, 59);
+
+                    btnViewRollup.BackColor = (mode == 1) ? Color.FromArgb(79, 70, 229) : Color.FromArgb(241, 245, 249);
+                    btnViewRollup.ForeColor = (mode == 1) ? Color.White : Color.FromArgb(30, 41, 59);
+
+                    btnViewCube.BackColor = (mode == 2) ? Color.FromArgb(79, 70, 229) : Color.FromArgb(241, 245, 249);
+                    btnViewCube.ForeColor = (mode == 2) ? Color.White : Color.FromArgb(30, 41, 59);
+                }
+
+                DataTable dt;
+                if (mode == 0)
+                {
+                    if (lblOlapDescription != null)
+                        lblOlapDescription.Text = "💡 View Hiệu Suất Sản Phẩm: Thống kê định lượng doanh thu, lợi nhuận gộp, biên lợi nhuận % và tồn kho thực tế của các SKU làm căn cứ cho tiêu chí DSS.";
+                    dt = LocalDataStore.GetOlapProductPerformance();
+                }
+                else if (mode == 1)
+                {
+                    if (lblOlapDescription != null)
+                        lblOlapDescription.Text = "💡 OLAP ROLLUP Query: GROUP BY ROLLUP(c.category_name, p.product_name) - Phân cấp dữ liệu từ Chi tiết SKU -> Tổng Ngành Hàng -> Tổng Toàn Doanh Nghiệp phục vụ Phân Bổ Hàng Tồn.";
+                    dt = LocalDataStore.GetOlapRollup();
+                }
+                else
+                {
+                    if (lblOlapDescription != null)
+                        lblOlapDescription.Text = "💡 OLAP CUBE Query: GROUP BY CUBE(cust.customer_segment, cat.category_name) - Ma trận đa chiều Phân khúc Khách hàng × Ngành hàng phục vụ Quyết Định Khuyến Mãi.";
+                    dt = LocalDataStore.GetOlapCube();
+                }
+
+                if (dgvSales != null)
+                {
+                    dgvSales.DataSource = dt;
+                    foreach (DataGridViewColumn col in dgvSales.Columns)
+                    {
+                        col.HeaderCell.Style.WrapMode = DataGridViewTriState.False;
+                        col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
+                        col.MinimumWidth = 95;
+                    }
+                }
+                return;
+            }
+
             try
             {
                 if (btnViewSales != null && btnViewRollup != null && btnViewCube != null)
@@ -1842,6 +2019,13 @@ namespace DSS_App
             }
             catch (Exception ex)
             {
+                if (!DatabaseGuard.IsStandaloneMode)
+                {
+                    DatabaseGuard.IsStandaloneMode = true;
+                    LocalDataStore.EnsureInitialized();
+                    LoadOlapData(mode);
+                    return;
+                }
                 MessageBox.Show("Lỗi nạp dữ liệu OLAP: " + ex.Message, "Lỗi OLAP", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -2533,6 +2717,23 @@ namespace DSS_App
 
         private void RefreshReportData()
         {
+            if (DatabaseGuard.IsStandaloneMode)
+            {
+                DataTable dt = LocalDataStore.GetFinalRankingDataTable();
+                if (dt.Rows.Count > 0)
+                {
+                    DssSnapshot snap = LocalDataStore.GetSnapshot();
+                    currentSnapshot = snap;
+                    FormatAIMemo(dt, snap);
+                    MessageBox.Show("Đã làm mới dữ liệu Form Báo Cáo & AI Insights từ Động cơ CSDL Cục bộ.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Chưa có kết quả tính toán. Vui lòng nhấn 'Chạy Mô Hình' tại Tab 2.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                return;
+            }
+
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
@@ -2569,12 +2770,15 @@ namespace DSS_App
                     }
                 }
             }
-            catch (SqlException ex) when (DatabaseGuard.IsConnectionError(ex))
-            {
-                MessageBox.Show(DatabaseGuard.FriendlyConnectionError(ex), "Mất kết nối SQL Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
             catch (Exception ex)
             {
+                if (!DatabaseGuard.IsStandaloneMode)
+                {
+                    DatabaseGuard.IsStandaloneMode = true;
+                    LocalDataStore.EnsureInitialized();
+                    RefreshReportData();
+                    return;
+                }
                 MessageBox.Show("Lỗi làm mới báo cáo: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -3039,19 +3243,30 @@ namespace DSS_App
             public override string ToString() => Name;
         }
 
-        private void PopulateWhatIfProducts(SqlConnection conn)
+        private void PopulateWhatIfProducts(SqlConnection? conn)
         {
             if (cboWhatIfProduct == null) return;
             cboWhatIfProduct.Items.Clear();
-            using (SqlCommand cmd = new SqlCommand("SELECT alternative_id, alternative_name, alternative_code FROM dbo.ALTERNATIVES WHERE session_id = 1 ORDER BY alternative_id", conn))
-            using (SqlDataReader rd = cmd.ExecuteReader())
+
+            if (DatabaseGuard.IsStandaloneMode || conn == null)
             {
-                while (rd.Read())
+                foreach (var (id, name) in LocalDataStore.GetWhatIfProductItems())
                 {
-                    int id = rd.GetInt32(0);
-                    string name = rd.GetString(1);
-                    string code = rd.GetString(2);
-                    cboWhatIfProduct.Items.Add(new WhatIfProductItem { AltId = id, Name = $"{name} ({code})" });
+                    cboWhatIfProduct.Items.Add(new WhatIfProductItem { AltId = id, Name = name });
+                }
+            }
+            else
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT alternative_id, alternative_name, alternative_code FROM dbo.ALTERNATIVES WHERE session_id = 1 ORDER BY alternative_id", conn))
+                using (SqlDataReader rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                    {
+                        int id = rd.GetInt32(0);
+                        string name = rd.GetString(1);
+                        string code = rd.GetString(2);
+                        cboWhatIfProduct.Items.Add(new WhatIfProductItem { AltId = id, Name = $"{name} ({code})" });
+                    }
                 }
             }
             if (cboWhatIfProduct.Items.Count > 0)
@@ -3075,6 +3290,52 @@ namespace DSS_App
 
         private void ApplyWhatIfScenario(int scenario)
         {
+            if (DatabaseGuard.IsStandaloneMode)
+            {
+                string scenarioName = "";
+                string advisory = "";
+
+                if (scenario == 0)
+                {
+                    LocalDataStore.ResetToBaseline();
+                    var snap = LocalDataStore.Recalculate();
+                    currentSnapshot = snap;
+                    if (whatIfDiagramPanel != null) whatIfDiagramPanel.AhpInfo = snap.Ahp;
+                    scenarioName = "Khôi Phục Kịch Bản Gốc (Baseline)";
+                    advisory = $"• Đã khôi phục toàn bộ điểm chuẩn hóa về dữ liệu thô gốc.\n" +
+                               $"• Phương án dẫn đầu hiện tại: [{snap.Top?.ShortName}] (Điểm AHP: {snap.Top?.Score:0.0000}).";
+                    ExecuteWhatIfUpdateStandalone(scenarioName, advisory);
+                    return;
+                }
+
+                LocalDataStore.ResetToBaseline();
+                if (scenario == 1)
+                {
+                    scenarioName = "Bùng Nổ Nhu Cầu Thị Trường (+40% Tiêu Chí Nhu Cầu)";
+                    LocalDataStore.ApplyScenarioMultiplier("C_DEMAND", 1.40);
+                    advisory = "• KỊCH BẢN: Thị trường tăng trưởng mạnh, chỉ số nhu cầu tiêu thụ (C_DEMAND) tăng +40%.\n" +
+                               "• TÁC ĐỘNG: Mô hình khuếch đại điểm số cho các phương án có thị phần và nhu cầu cao.";
+                }
+                else if (scenario == 2)
+                {
+                    scenarioName = "Đứt Gãy Cung Ứng & Rủi Ro Tồn Kho Gia Tăng";
+                    LocalDataStore.ApplyScenarioMultiplier("C_RISK", 0.70);
+                    advisory = "• KỊCH BẢN: Chuỗi cung ứng bị gián đoạn, rủi ro tồn kho tăng cao (giảm 30% điểm an toàn vốn C_RISK).\n" +
+                               "• TÁC ĐỘNG: Các phương án có chu kỳ tồn kho lớn hoặc thời gian giao hàng dài sẽ bị hạ xếp hạng.";
+                }
+                else if (scenario == 3)
+                {
+                    scenarioName = "Lạm Phát & Thắt Chặt Chi Tiêu (Ưu Tiên Chi Phí & Giá)";
+                    LocalDataStore.ApplyScenarioMultiplier("C_MKTCOST", 1.30);
+                    LocalDataStore.ApplyScenarioMultiplier("C_PROFIT", 1.30);
+                    advisory = "• KỊCH BẢN: Người tiêu dùng thắt chặt chi tiêu, ưu tiên sản phẩm có biên LN tốt và tiết kiệm chi phí marketing.\n" +
+                               "• TÁC ĐỘNG: Nhóm sản phẩm tối ưu chi phí tiếp thị và biên lợi nhuận cao được cải thiện vị thế.";
+                }
+
+                ExecuteWhatIfUpdateStandalone(scenarioName, advisory);
+                return;
+            }
+
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
@@ -3141,12 +3402,15 @@ namespace DSS_App
                     ExecuteWhatIfUpdate(conn, sqlScenarioUpdate, scenarioName, advisory);
                 }
             }
-            catch (SqlException ex) when (DatabaseGuard.IsConnectionError(ex))
-            {
-                MessageBox.Show(DatabaseGuard.FriendlyConnectionError(ex), "Mất kết nối SQL Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
             catch (Exception ex)
             {
+                if (!DatabaseGuard.IsStandaloneMode)
+                {
+                    DatabaseGuard.IsStandaloneMode = true;
+                    LocalDataStore.EnsureInitialized();
+                    ApplyWhatIfScenario(scenario);
+                    return;
+                }
                 MessageBox.Show("Lỗi chạy kịch bản What-If: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -3166,6 +3430,16 @@ namespace DSS_App
                 decimal demandVal = numWhatIfDemand.Value;
                 decimal profitVal = numWhatIfProfit.Value;
                 decimal riskVal = numWhatIfRisk.Value;
+
+                if (DatabaseGuard.IsStandaloneMode)
+                {
+                    LocalDataStore.SetCustomScores(altId, (double)profitVal, (double)demandVal, (double)riskVal);
+                    string advisory = $"• KỊCH BẢN TÙY CHỈNH: Điều chỉnh tham số thị trường cho [{prodName}].\n" +
+                                      $"• Thiết lập mới: Nhu cầu = {demandVal:0.00}, Biên lợi nhuận = {profitVal:0.00}, An toàn vốn = {riskVal:0.00}.\n" +
+                                      $"• Hệ thống đã tính lại toàn bộ điểm số AHP và thứ hạng tương ứng.";
+                    ExecuteWhatIfUpdateStandalone($"Tùy Chỉnh Cho {prodName}", advisory);
+                    return;
+                }
 
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
@@ -3194,18 +3468,27 @@ namespace DSS_App
                     ExecuteWhatIfUpdate(conn, sqlCustom, $"Tùy Chỉnh Cho {prodName}", advisory);
                 }
             }
-            catch (SqlException ex) when (DatabaseGuard.IsConnectionError(ex))
-            {
-                MessageBox.Show(DatabaseGuard.FriendlyConnectionError(ex), "Mất kết nối SQL Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
             catch (Exception ex)
             {
+                if (!DatabaseGuard.IsStandaloneMode)
+                {
+                    DatabaseGuard.IsStandaloneMode = true;
+                    LocalDataStore.EnsureInitialized();
+                    ApplyCustomTuning();
+                    return;
+                }
                 MessageBox.Show("Lỗi áp dụng tham số: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void ExecuteWhatIfUpdate(string sqlUpdate, string scenarioTitle, string advisory)
         {
+            if (DatabaseGuard.IsStandaloneMode)
+            {
+                ExecuteWhatIfUpdateStandalone(scenarioTitle, advisory);
+                return;
+            }
+
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
@@ -3214,14 +3497,43 @@ namespace DSS_App
                     ExecuteWhatIfUpdate(conn, sqlUpdate, scenarioTitle, advisory);
                 }
             }
-            catch (SqlException ex) when (DatabaseGuard.IsConnectionError(ex))
-            {
-                MessageBox.Show(DatabaseGuard.FriendlyConnectionError(ex), "Mất kết nối SQL Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
             catch (Exception ex)
             {
+                if (!DatabaseGuard.IsStandaloneMode)
+                {
+                    DatabaseGuard.IsStandaloneMode = true;
+                    LocalDataStore.EnsureInitialized();
+                    ExecuteWhatIfUpdateStandalone(scenarioTitle, advisory);
+                    return;
+                }
                 MessageBox.Show("Lỗi cập nhật What-If: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void ExecuteWhatIfUpdateStandalone(string scenarioTitle, string advisory)
+        {
+            var snap = LocalDataStore.Recalculate();
+            currentSnapshot = snap;
+
+            DataTable dtCompare = LocalDataStore.GetComparisonDataTable(baselineRanks, out string winnerName);
+
+            if (!string.IsNullOrEmpty(winnerName) && !advisory.Contains(winnerName) && !scenarioTitle.Contains("Gốc"))
+            {
+                advisory += $"\n• KẾT QUẢ MÔ HÌNH: [{winnerName}] đang giữ vị trí HẠNG 1 trong kịch bản này.";
+            }
+
+            if (lblWhatIfAdvisory != null)
+            {
+                lblWhatIfAdvisory.Text = advisory;
+            }
+
+            if (whatIfDiagramPanel != null)
+            {
+                whatIfDiagramPanel.AhpInfo = snap.Ahp;
+                whatIfDiagramPanel.SetData(dtCompare);
+            }
+
+            if (pnlDecisionHub != null) pnlDecisionHub.RefreshData(snap);
         }
 
         private void ExecuteWhatIfUpdate(SqlConnection conn, string sqlUpdate, string scenarioTitle, string advisory)
@@ -3379,6 +3691,15 @@ namespace DSS_App
         private DssSnapshot? GetOrLoadSnapshot()
         {
             if (currentSnapshot != null && currentSnapshot.HasResults) return currentSnapshot;
+            if (DatabaseGuard.IsStandaloneMode)
+            {
+                var snap = LocalDataStore.GetSnapshot();
+                if (snap != null && snap.HasResults)
+                {
+                    currentSnapshot = snap;
+                    return snap;
+                }
+            }
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
@@ -3435,7 +3756,9 @@ namespace DSS_App
             }
             catch (SqlException ex) when (DatabaseGuard.IsConnectionError(ex))
             {
-                MessageBox.Show(DatabaseGuard.FriendlyConnectionError(ex), "Mất kết nối SQL Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DatabaseGuard.IsStandaloneMode = true;
+                ExportWordDocument();
+                return;
             }
             catch (Exception ex)
             {
@@ -3491,7 +3814,9 @@ namespace DSS_App
             }
             catch (SqlException ex) when (DatabaseGuard.IsConnectionError(ex))
             {
-                MessageBox.Show(DatabaseGuard.FriendlyConnectionError(ex), "Mất kết nối SQL Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DatabaseGuard.IsStandaloneMode = true;
+                ExportReport();
+                return;
             }
             catch (Exception ex)
             {

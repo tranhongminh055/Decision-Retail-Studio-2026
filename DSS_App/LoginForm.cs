@@ -162,6 +162,26 @@ namespace DSS_App
             LoadWatermarkBackground();
             BuildUI();
 
+            if (DatabaseGuard.IsStandaloneMode)
+            {
+                txtUsername.Text = "admin";
+                txtUsername.Font = new Font("Segoe UI", 11f, FontStyle.Regular);
+                txtUsername.ForeColor = Color.FromArgb(15, 23, 42);
+                isUserWatermark = false;
+
+                txtPassword.Text = "123456";
+                txtPassword.Font = new Font("Segoe UI", 11f, FontStyle.Regular);
+                txtPassword.ForeColor = Color.FromArgb(15, 23, 42);
+                txtPassword.UseSystemPasswordChar = true;
+                isPassWatermark = false;
+
+                if (lblFooter != null)
+                {
+                    lblFooter.Text = "⚡ Microsoft Store Edition: Đã sẵn sàng tài khoản Quản trị viên (admin / 123456)";
+                    lblFooter.ForeColor = Color.FromArgb(16, 185, 129);
+                }
+            }
+
             this.AcceptButton = btnLogin;
             this.KeyDown += (s, e) =>
             {
@@ -669,8 +689,10 @@ namespace DSS_App
                 lblError.ForeColor = Color.FromArgb(220, 38, 38);
                 if (error.StartsWith("Không thể kết nối tới SQL Server"))
                 {
-                    lblError.Text = "✖ SQL Server chưa chạy - hệ thống không thể hoạt động!";
-                    MessageBox.Show(this, error, "Lỗi kết nối SQL Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    DatabaseGuard.IsStandaloneMode = true;
+                    LocalDataStore.EnsureInitialized();
+                    PerformLogin();
+                    return;
                 }
                 else
                 {

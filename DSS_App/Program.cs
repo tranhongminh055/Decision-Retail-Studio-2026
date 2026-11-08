@@ -6,8 +6,25 @@ static class Program
     
     /// </summary>
     [STAThread]
-    static void Main()
+    static int Main(string[] args)
     {
+        if (args != null && args.Contains("--test-standalone"))
+        {
+            DatabaseGuard.IsStandaloneMode = true;
+            LocalDataStore.EnsureInitialized();
+            bool authOk = LocalDataStore.Authenticate("admin", "123456", out string authErr);
+            var ahp = LocalDataStore.GetAhpResult();
+            var snap = LocalDataStore.Recalculate();
+            var dtRank = LocalDataStore.GetFinalRankingDataTable();
+            var dtOlap = LocalDataStore.GetOlapProductPerformance();
+            Console.WriteLine($"[TEST] Standalone Auth: {authOk} (User: {UserSession.CurrentUser?.FullName})");
+            Console.WriteLine($"[TEST] AHP CR: {ahp.CR:0.0000}, Consistent: {ahp.IsConsistent}");
+            Console.WriteLine($"[TEST] Top Rank: {snap.Top?.ShortName} (Score: {snap.Top?.Score:0.0000})");
+            Console.WriteLine($"[TEST] Ranking Rows: {dtRank.Rows.Count}");
+            Console.WriteLine($"[TEST] OLAP Rows: {dtOlap.Rows.Count}");
+            return (authOk && ahp.IsConsistent && snap.Top != null && dtRank.Rows.Count == 4) ? 0 : 1;
+        }
+
         try
         {
             Application.ThreadException += (s, e) =>
@@ -23,7 +40,7 @@ static class Program
             {
                 if (splash.ShowDialog() != DialogResult.OK)
                 {
-                    return;
+                    return 0;
                 }
             }
 
@@ -31,15 +48,17 @@ static class Program
             {
                 if (login.ShowDialog() != DialogResult.OK)
                 {
-                    return;
+                    return 0;
                 }
             }
 
             Application.Run(new Form1());
+            return 0;
         }
         catch (System.Exception ex)
         {
             System.Windows.Forms.MessageBox.Show(ex.ToString(), "Lỗi khởi động", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            return 1;
         }
     }    
 }

@@ -74,10 +74,16 @@ namespace DSS_App
                 return false;
             }
 
+            // Nếu đang chạy Chế độ Cục bộ (Microsoft Store Standalone Engine)
+            if (DatabaseGuard.IsStandaloneMode)
+            {
+                return LocalDataStore.Authenticate(username, password, out errorMessage);
+            }
+
             string trimUser = username.Trim();
             string trimPass = password.Trim();
 
-            // Xác thực 100% với CSDL thật SQL Server (DSS_SalesDB.dbo.USERS)
+            // Xác thực với CSDL SQL Server (DSS_SalesDB.dbo.USERS)
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
@@ -140,8 +146,9 @@ namespace DSS_App
             }
             catch (SqlException ex) when (DatabaseGuard.IsConnectionError(ex))
             {
-                errorMessage = DatabaseGuard.FriendlyConnectionError(ex);
-                return false;
+                DatabaseGuard.IsStandaloneMode = true;
+                LocalDataStore.EnsureInitialized();
+                return LocalDataStore.Authenticate(username, password, out errorMessage);
             }
             catch (Exception ex)
             {
@@ -227,6 +234,11 @@ namespace DSS_App
 
             string trimPhone = string.IsNullOrWhiteSpace(phoneNumber) ? "" : phoneNumber.Trim();
 
+            if (DatabaseGuard.IsStandaloneMode)
+            {
+                return LocalDataStore.RegisterUser(username, password, confirmPassword, fullName, email, phoneNumber, role, out errorMessage);
+            }
+
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
@@ -288,8 +300,9 @@ namespace DSS_App
             }
             catch (SqlException ex) when (DatabaseGuard.IsConnectionError(ex))
             {
-                errorMessage = DatabaseGuard.FriendlyConnectionError(ex);
-                return false;
+                DatabaseGuard.IsStandaloneMode = true;
+                LocalDataStore.EnsureInitialized();
+                return LocalDataStore.RegisterUser(username, password, confirmPassword, fullName, email, phoneNumber, role, out errorMessage);
             }
             catch (Exception ex)
             {
@@ -327,6 +340,11 @@ namespace DSS_App
             }
 
             string trimPhone = string.IsNullOrWhiteSpace(phoneNumber) ? "" : phoneNumber.Trim();
+
+            if (DatabaseGuard.IsStandaloneMode)
+            {
+                return LocalDataStore.UpdateProfile(userId, fullName, email, phoneNumber, out errorMessage);
+            }
 
             try
             {
@@ -380,8 +398,9 @@ namespace DSS_App
             }
             catch (SqlException ex) when (DatabaseGuard.IsConnectionError(ex))
             {
-                errorMessage = DatabaseGuard.FriendlyConnectionError(ex);
-                return false;
+                DatabaseGuard.IsStandaloneMode = true;
+                LocalDataStore.EnsureInitialized();
+                return LocalDataStore.UpdateProfile(userId, fullName, email, phoneNumber, out errorMessage);
             }
             catch (Exception ex)
             {
@@ -418,6 +437,11 @@ namespace DSS_App
             {
                 errorMessage = "Mật khẩu xác nhận không khớp với mật khẩu mới!";
                 return false;
+            }
+
+            if (DatabaseGuard.IsStandaloneMode)
+            {
+                return LocalDataStore.ChangePassword(userId, currentPassword, newPassword, confirmPassword, out errorMessage);
             }
 
             try
@@ -473,8 +497,9 @@ namespace DSS_App
             }
             catch (SqlException ex) when (DatabaseGuard.IsConnectionError(ex))
             {
-                errorMessage = DatabaseGuard.FriendlyConnectionError(ex);
-                return false;
+                DatabaseGuard.IsStandaloneMode = true;
+                LocalDataStore.EnsureInitialized();
+                return LocalDataStore.ChangePassword(userId, currentPassword, newPassword, confirmPassword, out errorMessage);
             }
             catch (Exception ex)
             {

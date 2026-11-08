@@ -498,8 +498,9 @@ namespace DSS_App
                 {
                     t.Stop();
                     t.Dispose();
+                    string storeText = DatabaseGuard.IsStandaloneMode ? "Động cơ CSDL Cục bộ Siêu Tốc" : "bảng USERS (CSDL DSS_SalesDB)";
                     MessageBox.Show(
-                        $"Đăng ký tài khoản '{username}' thành công!\nDữ liệu đã được lưu an toàn vào bảng USERS (CSDL DSS_SalesDB).\nBạn có thể đăng nhập ngay bằng mật khẩu vừa thiết lập.",
+                        $"Đăng ký tài khoản '{username}' thành công!\nDữ liệu đã được lưu an toàn vào {storeText}.\nBạn có thể đăng nhập ngay bằng mật khẩu vừa thiết lập.",
                         "Thông báo Đăng ký thành công",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
@@ -515,13 +516,21 @@ namespace DSS_App
                 lblError.ForeColor = Color.FromArgb(220, 38, 38);
                 if (errorMsg.StartsWith("Không thể kết nối tới SQL Server"))
                 {
-                    lblError.Text = "✖ SQL Server chưa chạy - không thể đăng ký tài khoản!";
-                    MessageBox.Show(this, errorMsg, "Lỗi kết nối SQL Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    DatabaseGuard.IsStandaloneMode = true;
+                    LocalDataStore.EnsureInitialized();
+                    bool fallbackOk = LocalDataStore.RegisterUser(username, password, confirmPass, fullName, email, phone, role, out errorMsg);
+                    if (fallbackOk)
+                    {
+                        this.RegisteredUsername = username;
+                        lblError.ForeColor = Color.FromArgb(16, 185, 129);
+                        lblError.Text = $"✓ Đăng ký thành công! Đang chuyển về màn hình đăng nhập...";
+                        lblError.Visible = true;
+                        this.DialogResult = DialogResult.OK;
+                        this.Close();
+                        return;
+                    }
                 }
-                else
-                {
-                    lblError.Text = errorMsg;
-                }
+                lblError.Text = errorMsg;
                 lblError.Visible = true;
             }
         }

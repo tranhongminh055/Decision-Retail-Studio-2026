@@ -187,41 +187,32 @@ namespace DSS_App
 
         private async void CheckDatabaseThenStart()
         {
-            while (true)
+            lblStatus.Text = "Đang kiểm tra kết nối cơ sở dữ liệu hệ thống...";
+            string error = string.Empty;
+            bool ok = await System.Threading.Tasks.Task.Run(() => DatabaseGuard.Check(out error));
+            if (isExiting) return;
+
+            if (DatabaseGuard.IsStandaloneMode)
             {
-                lblStatus.Text = "Đang kết nối cơ sở dữ liệu SQL Server (DSS_SalesDB)...";
-                string error = string.Empty;
-                bool ok = await System.Threading.Tasks.Task.Run(() => DatabaseGuard.Check(out error));
-                if (isExiting) return;
-
-                if (ok)
-                {
-                    StartSplashAnimation();
-                    return;
-                }
-
-                lblStatus.Text = "Không thể kết nối SQL Server!";
-                this.TopMost = false;
-                DialogResult choice = MessageBox.Show(this,
-                    error + "\n\nBấm [Thử lại] sau khi đã khởi động SQL Server, hoặc [Hủy] để thoát.",
-                    "Lỗi kết nối SQL Server - Hệ thống không thể hoạt động",
-                    MessageBoxButtons.RetryCancel,
-                    MessageBoxIcon.Error);
-                this.TopMost = true;
-
-                if (choice != DialogResult.Retry)
-                {
-                    ExitApplication();
-                    return;
-                }
+                lblStatus.Text = "Khởi chạy Động cơ CSDL Cục bộ (Standalone Store Engine)...";
             }
+            else
+            {
+                lblStatus.Text = "Đã kết nối SQL Server (DSS_SalesDB)...";
+            }
+
+            StartSplashAnimation();
         }
 
         private void StartSplashAnimation()
         {
+            string dbMsg = DatabaseGuard.IsStandaloneMode
+                ? "Đang nạp Động cơ CSDL Cục bộ (Standalone Store Engine)..."
+                : "Đang kết nối cơ sở dữ liệu SQL Server (DSS_SalesDB)...";
+
             var stages = new (int targetPercent, string text)[]
             {
-                (30, "Đang kết nối cơ sở dữ liệu SQL Server (DSS_SalesDB)..."),
+                (30, dbMsg),
                 (60, "Đang nạp Ma trận so sánh cặp Saaty 5x5 & Kiểm định CR..."),
                 (85, "Đang kết nối Kho dữ liệu bán hàng đa chiều OLAP..."),
                 (100, "Sẵn sàng khởi động DSS Retail Studio 2026!")
