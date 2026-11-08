@@ -1,0 +1,12 @@
+{
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/scripts"
+  ],
+  "python.autoComplete.extraPaths": [
+    "${workspaceFolder}/scripts"
+  ],
+  "pydev.pythonPath": [
+    "${workspaceFolder}",
+    "${workspaceFolder}/scripts"
+  ]
+}

@@ -7,16 +7,30 @@ IS 402 A - Nhom 05 - Duy Tan University
 """
 
 import os
+import sys
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+if SCRIPT_DIR not in sys.path:
+    sys.path.insert(0, SCRIPT_DIR)
+
 import docx
 from docx import Document
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT, WD_ALIGN_VERTICAL
-from docx_helpers import set_cell_background, set_cell_margins, set_table_borders, add_callout
-from docx_builder_base import (
-    create_document, add_title, add_heading_1, add_heading_2, add_heading_3,
-    add_body_p, add_bullet_p, add_image_figure, create_styled_table
-)
+
+try:
+    from docx_helpers import set_cell_background, set_cell_margins, set_table_borders, add_callout
+    from docx_builder_base import (
+        create_document, add_title, add_heading_1, add_heading_2, add_heading_3,
+        add_body_p, add_bullet_p, add_image_figure, create_styled_table
+    )
+except ImportError:
+    from scripts.docx_helpers import set_cell_background, set_cell_margins, set_table_borders, add_callout
+    from scripts.docx_builder_base import (
+        create_document, add_title, add_heading_1, add_heading_2, add_heading_3,
+        add_body_p, add_bullet_p, add_image_figure, create_styled_table
+    )
 
 def build_full_docx():
     print("Building Document...")

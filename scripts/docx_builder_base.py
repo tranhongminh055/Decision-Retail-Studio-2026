@@ -6,12 +6,23 @@ IS 402 A - Nhom 05 - Duy Tan University
 """
 
 import os
+import sys
+
+# Add scripts directory to path for both standalone execution and VS Code analysis
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+if SCRIPT_DIR not in sys.path:
+    sys.path.insert(0, SCRIPT_DIR)
+
 import docx
 from docx import Document
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT, WD_ALIGN_VERTICAL
-from docx_helpers import set_cell_background, set_cell_margins, set_table_borders, add_callout
+
+try:
+    from docx_helpers import set_cell_background, set_cell_margins, set_table_borders, add_callout
+except ImportError:
+    from scripts.docx_helpers import set_cell_background, set_cell_margins, set_table_borders, add_callout
 
 def create_document():
     doc = Document()
